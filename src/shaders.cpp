@@ -97,49 +97,6 @@ void Shader::compile() {
 
 void Shader::activate() { glUseProgram(this->id); }
 
-// TODO(aryanj): properly implement this
-// void Shader::configure_attributes(i32 _layout_num,
-//                                   std::vector<i32> _layout_size) {
-//   if (this->layout_num) {
-//     error("Shader attributes have alrealy been configured");
-//   }
-//
-//   if (!_layout_num || !_layout_size.size()) {
-//     error("Invalid values for shader attributes");
-//   }
-//
-//   if (this->layout_num != this->layout_size.size()) {
-//     error("`layout_num` must be equal to the size of `layout_size`");
-//   }
-//
-//   this->layout_num = _layout_num;
-//   this->layout_size = _layout_size;
-// }
-
-// void Shader::configure_vao() {
-//   if (!this->layout_num) {
-//     error("Shader attributes must be set before calling this method");
-//   }
-//
-//   const auto size = sizeof(f32);
-//
-//   // TODO(aryanj): stride doent get proper value. what i need is to calculate
-//   // the sum of the layout_size before multiplying standard size with it to get
-//   // the stride.
-//
-//   //  u32 sum_size = 0;
-//   //  for (u32 i = 0; i < this->layout_num; ++i) {
-//   //    glVertexAttribPointer(i, this->layout_size[i], GL_FLOAT, GL_FALSE,
-//   //                          this->layout_size[i] * size,
-//   //                          (void *)(sum_size * size));
-//   //    sum_size += this->layout_size[i];
-//   //    glEnableVertexAttribArray(i);
-//   //  }
-//
-//   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(f32), (void *)0);
-//   glEnableVertexAttribArray(0);
-// }
-
 void Shader::set_bool(cstr id, bool val) {
   glUniform1i(glGetUniformLocation(this->id, id), val ? 1 : 0);
 }
@@ -184,7 +141,6 @@ void Shader::log_errors(u32 shader, i8 type) {
 
   char log[512];
 
-  // std::array<char, 1024> info_log;
   if (type) {
     cstr s;
     switch (type) {
