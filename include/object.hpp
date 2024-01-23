@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "transform.hpp"
+#include "texture.hpp"
 #include "typedefs.hpp"
 #include "vertex.hpp"
 
@@ -12,11 +12,18 @@ class Object {
   u32 id;
   cstr handle;
 
-  std::vector<f32> vertices;
-
-  Object(cstr handle, std::vector<f32> vertices);
+  std::vector<vert> vertices;
+  Texture texture;
 
   void render();
 };
+
+namespace Objects {
+
+Object *create(cstr handle, std::vector<vert> vertices,
+               Texture texture = Texture());
+std::vector<Object *> all();
+
+}  // namespace Objects
 
 #endif

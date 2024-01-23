@@ -1,12 +1,11 @@
 #ifndef __SHADERS_HPP__
 #define __SHADERS_HPP__
 
-#include <string>
 #include <vector>
 
 #include "typedefs.hpp"
-#include "vector.hpp"
-#include "matrix.hpp"
+#include "math/vector.hpp"
+#include "math/matrix.hpp"
 
 #define SHADER_PROG 0
 #define SHADER_VERT 1
@@ -37,27 +36,17 @@ class Shader {
   // shader for rendering.
   void activate();
 
-  // Sets the attributes required to configure the VAOs. Note that the
-  // attributes can only be set once. Doing it multiple times will result in an
-  // error.
-  void configure_attributes(i32 layout_num, std::vector<i32> layout_size);
-
-  // Configures the structure of the VAO (layouts in the shader files). Note
-  // that this method should only be called when configuring the VAOs for
-  // rendering. Any other use may cause undefined behaviour.
-  void configure_vao();
-
   // Modify a uniform in the shader
   void set_bool(cstr id, bool val);
   void set_f32(cstr id, f32 val);
   void set_i32(cstr id, i32 val);
-  void set_v2(cstr id, f32 x, f32 y);
-  void set_v2(cstr id, v2 val);
-  void set_v3(cstr id, f32 x, f32 y, f32 z);
-  void set_v3(cstr id, v3 val);
-  void set_v4(cstr id, f32 x, f32 y, f32 z, f32 w);
-  void set_v4(cstr id, v4 val);
-  void set_m4(cstr id, m4 val);
+  void set_vec2(cstr id, f32 x, f32 y);
+  void set_vec2(cstr id, vec2 val);
+  void set_vec3(cstr id, f32 x, f32 y, f32 z);
+  void set_vec3(cstr id, vec3 val);
+  void set_vec4(cstr id, f32 x, f32 y, f32 z, f32 w);
+  void set_vec4(cstr id, vec4 val);
+  void set_mat4(cstr id, mat4 val);
 
  private:
   // Stores the shader code in their respective variables

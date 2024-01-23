@@ -108,32 +108,32 @@ void Shader::set_i32(cstr id, i32 val) {
   glUniform1i(glGetUniformLocation(this->id, id), val);
 }
 
-void Shader::set_v2(cstr id, f32 x, f32 y) {
+void Shader::set_vec2(cstr id, f32 x, f32 y) {
   glUniform2f(glGetUniformLocation(this->id, id), x, y);
 }
 
-void Shader::set_v2(cstr id, v2 val) {
+void Shader::set_vec2(cstr id, vec2 val) {
   glUniform2f(glGetUniformLocation(this->id, id), val.x, val.y);
 }
 
-void Shader::set_v3(cstr id, f32 x, f32 y, f32 z) {
+void Shader::set_vec3(cstr id, f32 x, f32 y, f32 z) {
   glUniform3f(glGetUniformLocation(this->id, id), x, y, z);
 }
 
-void Shader::set_v3(cstr id, v3 val) {
+void Shader::set_vec3(cstr id, vec3 val) {
   glUniform3f(glGetUniformLocation(this->id, id), val.x, val.y, val.z);
 }
 
-void Shader::set_v4(cstr id, f32 x, f32 y, f32 z, f32 w) {
+void Shader::set_vec4(cstr id, f32 x, f32 y, f32 z, f32 w) {
   glUniform4f(glGetUniformLocation(this->id, id), x, y, z, w);
 }
 
-void Shader::set_v4(cstr id, v4 val) {
+void Shader::set_vec4(cstr id, vec4 val) {
   glUniform4f(glGetUniformLocation(this->id, id), val.x, val.y, val.z, val.w);
 }
 
-void Shader::set_m4(cstr id, m4 val) {
-  glUniformMatrix4fv(glGetUniformLocation(this->id, id), 1, false, &val.data());
+void Shader::set_mat4(cstr id, mat4 val) {
+  glUniformMatrix4fv(glGetUniformLocation(this->id, id), 1, false, &val.fdata());
 }
 
 void Shader::log_errors(u32 shader, i8 type) {
@@ -142,38 +142,36 @@ void Shader::log_errors(u32 shader, i8 type) {
   char log[512];
 
   if (type) {
-    cstr s;
+    cstr shader_type;
     switch (type) {
       case SHADER_VERT:
-        s = "SHADER_VERT";
+        shader_type = "SHADER_VERT";
         break;
       case SHADER_FRAG:
-        s = "SHADER_FRAG";
+        shader_type = "SHADER_FRAG";
         break;
       case SHADER_GEOM:
-        s = "SHADER_GEOM";
+        shader_type = "SHADER_GEOM";
         break;
       default:
-        s = "SHADER_UNKNOWN";
+        shader_type = "SHADER_UNKNOWN";
         break;
     }
 
     glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
     if (!compiled) {
       glGetShaderInfoLog(shader, 512, nullptr, log);
-      std::cout << "[ERROR] Shader '" << this->handle << "' could not compile "
-                << s << std::endl;
-      std::cout << log << std::endl;
-      exit(-1);
+      str s;
+      error(s + "Shader '" + this->handle + "' could not compile " +
+            shader_type + "\n" + log);
     }
   } else {
     glGetProgramiv(shader, GL_LINK_STATUS, &compiled);
     if (!compiled) {
       glGetProgramInfoLog(shader, 512, nullptr, log);
-      std::cout << "[ERROR] Shader program '" << this->handle
-                << "' failed to compile." << std::endl;
-      std::cout << log << std::endl;
-      exit(-1);
+      str s;
+      error(s + "Shader program '" + this->handle + "' failed to compile.\n" +
+            log);
     }
   }
 }
@@ -181,10 +179,8 @@ void Shader::log_errors(u32 shader, i8 type) {
 Shader *Shaders::get(cstr handle) {
   auto shader = _shaders.find(handle);
   if (shader == _shaders.end()) {
-    str msg = "Shader '";
-    msg += handle;
-    msg += "' doesn't exist";
-    error(msg);
+    str s;
+    error(s + "Shader '" + handle + "' doesn't exist");
   }
   return &shader->second;
 }

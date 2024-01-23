@@ -16,6 +16,7 @@ void win::init(const char* title) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_RESIZABLE, false);
+  glfwWindowHint(GLFW_SAMPLES, 16);
 
   window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, title, nullptr, nullptr);
   if (window == nullptr) {
@@ -26,5 +27,7 @@ void win::init(const char* title) {
   gladLoadGL();
   glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-  // info("OpenGL version is (%s)" + glGetString(GL_VERSION));
+  // Enable OpenGL features
+  glEnable(GL_LINE_SMOOTH);
+  glEnable(GL_MULTISAMPLE);
 }

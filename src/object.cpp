@@ -1,25 +1,36 @@
 #include "object.hpp"
-#include <map>
 
 #include "renderer.hpp"
 #include "typedefs.hpp"
-#include "vertex.hpp"
 
-// Hashmap to store all the created objects
-std::map<u32, Object> _objects = std::map<u32, Object>();
+// Vector to store all the created objects
+std::vector<Object> all_objects = std::vector<Object>();
 
-// // Keep track of the next id for an instantiated object
-// u32 next_id = 0;
+// Keep track of the next id for an instantiated object
+u32 next_id = 0;
 
-Object::Object(cstr handle, std::vector<f32> vertices) {
-  this->handle = handle;
-  this->vertices = vertices;
-  // this->indices = indices;
-  // this->id = next_id++;
+Object *Objects::create(cstr handle, std::vector<vert> vertices,
+                        Texture texture) {
+  Object obj;
+  obj.handle = handle;
+  obj.vertices = vertices;
+  obj.id = next_id++;
+  obj.texture = texture;
+  all_objects.push_back(obj);
 
-  // _objects.insert(std::map<u32, Object>::value_type(this->id, *this));
+  return &all_objects[obj.id];
+}
+
+std::vector<Object *> Objects::all() {
+  std::vector<Object *> out;
+  // Need this loop to convert vector of objects into a vector pointing back to
+  // the original data container. Note this is SUPER TEMP
+  for (auto &obj : all_objects) {
+    out.push_back(&obj);
+  }
+  return out;
 }
 
 void Object::render() {
-  active_renderer->render(this->vertices);
+  active_renderer->render(this->vertices, this->texture);
 }
