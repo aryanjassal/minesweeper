@@ -1,13 +1,10 @@
-#include <iostream>
 #include "glad/glad.h"
 #include "glfw/glfw3.h"
 #include "keyboard.hpp"
-#include "math/matrix_operations.hpp"
 #include "object.hpp"
 #include "renderer.hpp"
 #include "shaders.hpp"
 #include "texture.hpp"
-#include "typedefs.hpp"
 #include "vertex.hpp"
 #include "window.hpp"
 
@@ -17,17 +14,12 @@
 // else the formatter uses.
 // clang-format off
 const std::vector<vert> SQUARE_VERTICES = {
-  vert(vec3( 0.5f, -0.5f), vec2(1.0f, 1.0f)),
-  vert(vec3(-0.5f, -0.5f), vec2(0.0f, 1.0f)),
-  vert(vec3( 0.5f,  0.5f), vec2(1.0f, 0.0f)),
-  vert(vec3(-0.5f,  0.5f), vec2(0.0f, 0.0f))
-  // vert(vec3( 0.5f, -0.5f)),
-  // vert(vec3(-0.5f, -0.5f)),
-  // vert(vec3( 0.5f,  0.5f)),
-  // vert(vec3(-0.5f,  0.5f))
+  vert(glm::vec3( 0.5f, -0.5f, 0.0f), glm::vec2(1.0f, 1.0f)),
+  vert(glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec2(0.0f, 1.0f)),
+  vert(glm::vec3( 0.5f,  0.5f, 0.0f), glm::vec2(1.0f, 0.0f)),
+  vert(glm::vec3(-0.5f,  0.5f, 0.0f), glm::vec2(0.0f, 0.0f))
 };
 // clang-format on
-
 
 void render() {
   glClear(GL_COLOR_BUFFER_BIT);
@@ -48,12 +40,6 @@ void update() {
 }
 
 int main() {
-  mat4 m(1);
-  std::cout << m << std::endl;
-  translate(m, vec3(2));
-  std::cout << std::endl << m << std::endl;
-  return 0;
-
   win::init("Minesweeper");
   kb::init();
 
@@ -64,7 +50,7 @@ int main() {
   auto renderer = Renderer(shader);
   renderer.activate();
 
-  // Create objects and textures 
+  // Create objects and textures
   Texture *up = Textures::create("one", "assets/cellup.png");
   Object *sq = Objects::create("square", SQUARE_VERTICES, *up);
 

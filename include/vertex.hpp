@@ -1,15 +1,15 @@
 #ifndef __VERTEX_HPP__
 #define __VERTEX_HPP__
 
-#include "math/vector.hpp"
+#include "glm/glm.hpp"
 
 struct vert {
  public:
-  vec3 pos;
-  vec2 tex;
+  glm::vec3 pos;
+  glm::vec2 tex;
 
-  vert(vec3 pos) : pos{pos}, tex{vec2(0)} {}
-  vert(vec3 pos, vec2 tex) : pos{pos}, tex{tex} {}
+  vert(glm::vec3 pos) : pos{pos}, tex{glm::vec2(0)} {}
+  vert(glm::vec3 pos, glm::vec2 tex) : pos{pos}, tex{tex} {}
 };
 
 #endif

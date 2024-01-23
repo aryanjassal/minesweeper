@@ -1,11 +1,12 @@
 #include "shaders.hpp"
 
 #include <fstream>
-#include <iostream>
 #include <map>
 #include <sstream>
 
 #include "glad/glad.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "typedefs.hpp"
 #include "utils.hpp"
 
@@ -16,10 +17,8 @@ std::map<cstr, Shader> _shaders = std::map<cstr, Shader>();
 str read_file(cstr path) {
   std::ifstream f(path);
   if (!f.is_open()) {
-    str msg = "Failed to open '";
-    msg += path;
-    msg += "'";
-    error(msg);
+    str s;
+    error(s + "Failed to open '" + path + "'");
   }
   std::stringstream out;
   out << f.rdbuf();
@@ -31,7 +30,6 @@ Shader::Shader(cstr handle, cstr _vert, cstr _frag, cstr _geom) {
   this->handle = handle;
 
   if (_vert) {
-    // error("we shouldn't be here.");
     this->vert = read_file(_vert);
   } else {
     // fallback vertex shader
@@ -39,7 +37,6 @@ Shader::Shader(cstr handle, cstr _vert, cstr _frag, cstr _geom) {
   }
 
   if (_frag) {
-    // error("we shouldn't be here.");
     this->frag = read_file(_frag);
   } else {
     // fallback fragment shader
@@ -112,7 +109,7 @@ void Shader::set_vec2(cstr id, f32 x, f32 y) {
   glUniform2f(glGetUniformLocation(this->id, id), x, y);
 }
 
-void Shader::set_vec2(cstr id, vec2 val) {
+void Shader::set_vec2(cstr id, glm::vec2 val) {
   glUniform2f(glGetUniformLocation(this->id, id), val.x, val.y);
 }
 
@@ -120,7 +117,7 @@ void Shader::set_vec3(cstr id, f32 x, f32 y, f32 z) {
   glUniform3f(glGetUniformLocation(this->id, id), x, y, z);
 }
 
-void Shader::set_vec3(cstr id, vec3 val) {
+void Shader::set_vec3(cstr id, glm::vec3 val) {
   glUniform3f(glGetUniformLocation(this->id, id), val.x, val.y, val.z);
 }
 
@@ -128,12 +125,13 @@ void Shader::set_vec4(cstr id, f32 x, f32 y, f32 z, f32 w) {
   glUniform4f(glGetUniformLocation(this->id, id), x, y, z, w);
 }
 
-void Shader::set_vec4(cstr id, vec4 val) {
+void Shader::set_vec4(cstr id, glm::vec4 val) {
   glUniform4f(glGetUniformLocation(this->id, id), val.x, val.y, val.z, val.w);
 }
 
-void Shader::set_mat4(cstr id, mat4 val) {
-  glUniformMatrix4fv(glGetUniformLocation(this->id, id), 1, false, &val.fdata());
+void Shader::set_mat4(cstr id, glm::mat4 val) {
+  glUniformMatrix4fv(glGetUniformLocation(this->id, id), 1, false,
+                     glm::value_ptr(val));
 }
 
 void Shader::log_errors(u32 shader, i8 type) {
