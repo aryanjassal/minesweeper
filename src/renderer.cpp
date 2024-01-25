@@ -19,8 +19,8 @@ Renderer::Renderer(Shader &shader) {
   glGenBuffers(1, &this->vbo);
   glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
 
-  // For wireframed drawing
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  // // For wireframed drawing
+  // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
   // Used `nullptr` here as it doesn't make a difference for the first entry
   glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(f32) * 5, nullptr);
@@ -38,10 +38,10 @@ void Renderer::activate() {
 }
 
 void Renderer::render(std::vector<vert> verts, Texture texture) {
-  if (texture.height && texture.width) {
+  // if (texture.height && texture.width) {
     glActiveTexture(GL_TEXTURE0);
     texture.bind();
-  }
+  // }
 
   glBufferData(GL_ARRAY_BUFFER, sizeof(vert) * verts.size(), &verts[0],
                GL_DYNAMIC_DRAW);

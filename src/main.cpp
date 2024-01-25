@@ -51,8 +51,8 @@ int main() {
   renderer.activate();
 
   // Create objects and textures
-  Texture *up = Textures::create("one", "assets/cellup.png");
-  Object *sq = Objects::create("square", SQUARE_VERTICES, *up);
+  Texture *mine = Textures::create("one", "assets/cellmine.png");
+  Object *sq = Objects::create("square", SQUARE_VERTICES, *mine);
 
   // glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
   while (!glfwWindowShouldClose(window) && !keys[GLFW_KEY_ESCAPE]) {
