@@ -1,13 +1,14 @@
+// clang-format off
 #include "glad/glad.h"
-#include "utils.hpp"
+// clang-format on
+
 #include "window.hpp"
 
 #include <stdexcept>
 
-#include "constants.hpp"
-
 GLFWwindow* window = nullptr;
-void win::init(const char* title) {
+
+void win::init(cstr title, u32 width, u32 height) {
   if (!glfwInit()) {
     throw std::runtime_error("GLFW failed to initialise.");
   }
@@ -18,16 +19,24 @@ void win::init(const char* title) {
   glfwWindowHint(GLFW_RESIZABLE, false);
   glfwWindowHint(GLFW_SAMPLES, 16);
 
-  window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, title, nullptr, nullptr);
+  window = glfwCreateWindow(width, height, title, nullptr, nullptr);
   if (window == nullptr) {
     throw std::runtime_error("Game window failed to initialise.");
   }
 
   glfwMakeContextCurrent(window);
   gladLoadGL();
-  glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+  glViewport(0, 0, width, height);
 
   // Enable OpenGL features
   glEnable(GL_LINE_SMOOTH);
   glEnable(GL_MULTISAMPLE);
+  glEnable(GL_BLEND);
+
+  // Configure enabled OpenGL features
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+void win::init(cstr title, glm::vec2 dimensions) {
+  win::init(title, dimensions.x, dimensions.y);
 }

@@ -1,18 +1,19 @@
 #ifndef __TRANSFORM_HPP__
 #define __TRANSFORM_HPP__
 
-#include "typedefs.hpp"
-#include "vector.hpp"
+#include "glm/glm.hpp"  // IWYU pragma: keep
+#include "utils/types.hpp"
 
 using Transform = struct transform_t {
-  v3 position;
-  v2 scale;
+  glm::vec3 position;
+  glm::vec2 scale;
   f32 angle;
 
-  transform_t() : position{v3(0)}, scale{v2(1)}, angle(0) {}
-  transform_t(v3 pos) : position{pos}, scale{v2(1)}, angle(0) {}
-  transform_t(v3 pos, v2 scale) : position{pos}, scale{scale}, angle(0) {}
-  transform_t(v3 pos, v2 scale, f32 angle)
+  transform_t() : position{glm::vec3(0)}, scale{glm::vec2(1)}, angle(0) {}
+  transform_t(glm::vec3 pos) : position{pos}, scale{glm::vec2(1)}, angle(0) {}
+  transform_t(glm::vec3 pos, glm::vec2 scale)
+      : position{pos}, scale{scale}, angle(0) {}
+  transform_t(glm::vec3 pos, glm::vec2 scale, f32 angle)
       : position{pos}, scale{scale}, angle{angle} {}
 };
 

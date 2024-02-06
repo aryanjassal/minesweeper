@@ -3,7 +3,8 @@
 
 #include <vector>
 
-#include "typedefs.hpp"
+#include "glad/glad.h"
+#include "utils/types.hpp"
 
 class Texture {
  public:
@@ -26,7 +27,8 @@ class TextureMap {
 
 namespace Textures {
 
-Texture *create(cstr handle, cstr file_path, bool transparent = false);
+Texture *create(cstr handle, cstr file_path, bool transparent = false,
+                i32 filter = GL_LINEAR);
 
 }
 

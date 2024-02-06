@@ -1,3 +1,4 @@
+#include "camera.hpp"
 #include "glad/glad.h"
 #include "glfw/glfw3.h"
 #include "keyboard.hpp"
@@ -7,6 +8,9 @@
 #include "texture.hpp"
 #include "vertex.hpp"
 #include "window.hpp"
+
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
 
 // change vertices to three dimensions and start using either <vert> or <v3>
 // instead of this, which will make the code more efficient. Clang, don't touch
@@ -40,7 +44,7 @@ void update() {
 }
 
 int main() {
-  win::init("Minesweeper");
+  win::init("Minesweeper", SCREEN_WIDTH, SCREEN_HEIGHT);
   kb::init();
 
   auto shader = Shader("passthrough");
@@ -53,8 +57,10 @@ int main() {
   // Create objects and textures
   Texture *mine = Textures::create("one", "assets/cellmine.png");
   Object *sq = Objects::create("square", SQUARE_VERTICES, *mine);
+  Camera *cam = Cameras::create_ortho("main", 8, 6,
+                                      -100.0f, 100.0f);
+  cam->activate();
 
-  // glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
   while (!glfwWindowShouldClose(window) && !keys[GLFW_KEY_ESCAPE]) {
     render();
     update();

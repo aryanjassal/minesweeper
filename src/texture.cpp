@@ -4,7 +4,7 @@
 
 #include "glad/glad.h"
 #include "stb/stb_image.h"
-#include "utils.hpp"
+#include "utils/logging.hpp"
 
 // Hashmap to store all the created objects
 std::map<cstr, Texture> all_textures = std::map<cstr, Texture>();
@@ -13,7 +13,8 @@ std::map<cstr, Texture> all_textures = std::map<cstr, Texture>();
 void Texture::bind() { glBindTexture(GL_TEXTURE_2D, this->id); }
 
 // Create a new texture
-Texture *Textures::create(cstr handle, cstr file_path, bool transparent) {
+Texture *Textures::create(cstr handle, cstr file_path, bool transparent,
+                          i32 filter) {
   if (all_textures.find(handle) != all_textures.end()) {
     str s;
     error(s + "A texture with handle '" + handle + "' already exists.");
@@ -47,11 +48,13 @@ Texture *Textures::create(cstr handle, cstr file_path, bool transparent) {
                GL_RGBA, GL_UNSIGNED_BYTE, data);
   stbi_image_free(data);
 
-  // Set texture wrap and filter settings (redundant?)
+  // Set texture wrap and filter settings.
+  // NOTE: Through trial and error I have realised that this is critical.
+  // Otherwise the code will not work.
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 
   glBindTexture(GL_TEXTURE_2D, 0);
 

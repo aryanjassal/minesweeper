@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "glm/glm.hpp"
-#include "typedefs.hpp"
+#include "glm/glm.hpp"  // IWYU pragma: keep
+#include "utils/types.hpp"
 
 #define SHADER_PROG 0
 #define SHADER_VERT 1
@@ -45,7 +45,7 @@ class Shader {
   void set_vec3(cstr id, glm::vec3 val);
   void set_vec4(cstr id, f32 x, f32 y, f32 z, f32 w);
   void set_vec4(cstr id, glm::vec4 val);
-  void set_mat4(cstr id, glm::mat4 val);
+  void set_mat4(cstr id, const glm::mat4 &val);
 
  private:
   // Stores the shader code in their respective variables

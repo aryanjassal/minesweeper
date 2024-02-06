@@ -1,7 +1,5 @@
 #include "keyboard.hpp"
 
-#include <algorithm>
-#include <iostream>
 #include <vector>
 
 #include "window.hpp"
@@ -39,7 +37,7 @@ void callback(GLFWwindow *win, int _key, int code, int act, int mods) {
 void kb::init() { glfwSetKeyCallback(window, callback); }
 
 void kb::refresh() {
-for (auto &k : keys) {
+  for (auto &k : keys) {
     k.second.pressed = false;
     k.second.released = false;
   }
@@ -59,6 +57,6 @@ void kb::clean() {
 }
 
 void kb::update() {
-  kb::refresh();  
+  kb::refresh();
   kb::clean();
 }

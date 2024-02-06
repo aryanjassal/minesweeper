@@ -2,10 +2,14 @@
 
 #include <vector>
 
+#include "camera.hpp"
 #include "glad/glad.h"
+#include "glm/glm.hpp"                   // IWYU pragma: keep
+#include "glm/gtc/matrix_transform.hpp"  // IWYU pragma: keep
 #include "shaders.hpp"
 #include "texture.hpp"
-#include "typedefs.hpp"
+#include "utils/logging.hpp"  // IWYU pragma: keep
+#include "utils/types.hpp"
 #include "vertex.hpp"
 
 Renderer *active_renderer = nullptr;
@@ -38,11 +42,27 @@ void Renderer::activate() {
 }
 
 void Renderer::render(std::vector<vert> verts, Texture texture) {
-  // if (texture.height && texture.width) {
+#ifdef DEBUG
+  if (active_camera == nullptr) {
+    error("At least one camera must be active!");
+  }
+#endif
+
+  auto model = glm::mat4(1.0f);
+  model = glm::translate(model, glm::vec3(0.0f, 0.0f, 10.0f));
+
+  if (texture.height && texture.width) {
     glActiveTexture(GL_TEXTURE0);
     texture.bind();
-  // }
+  }
 
+  this->shader.set_mat4("model", model);
+  this->shader.set_mat4("projection", active_camera->projection);
+  this->shader.set_mat4("view", active_camera->view);
+
+  glBindVertexArray(this->vao);
+  // TODO(aryanj): do the vertices change position? if not, then no need to
+  // update them.
   glBufferData(GL_ARRAY_BUFFER, sizeof(vert) * verts.size(), &verts[0],
                GL_DYNAMIC_DRAW);
   glDrawArrays(GL_TRIANGLE_STRIP, 0, verts.size());

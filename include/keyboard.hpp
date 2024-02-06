@@ -3,8 +3,7 @@
 
 #include <map>
 
-#include "glfw/glfw3.h"
-#include "typedefs.hpp"
+#include "utils/types.hpp"
 
 using key = struct skey_t {
   bool pressed, down, released;

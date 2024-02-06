@@ -1,5 +1,5 @@
-#ifndef __TYPEDEFS_HPP__
-#define __TYPEDEFS_HPP__
+#ifndef __UTILS_TYPES_HPP__
+#define __UTILS_TYPES_HPP__
 
 #include <cstddef>
 #include <cstdint>

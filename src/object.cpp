@@ -1,7 +1,6 @@
 #include "object.hpp"
 
 #include "renderer.hpp"
-#include "typedefs.hpp"
 
 // Vector to store all the created objects
 std::vector<Object> all_objects = std::vector<Object>();

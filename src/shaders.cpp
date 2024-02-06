@@ -5,10 +5,10 @@
 #include <sstream>
 
 #include "glad/glad.h"
-#include "glm/glm.hpp"
+#include "glm/glm.hpp"  // IWYU pragma: keep
 #include "glm/gtc/type_ptr.hpp"
-#include "typedefs.hpp"
-#include "utils.hpp"
+#include "utils/logging.hpp"
+#include "utils/types.hpp"
 
 // Hashmap to store all created shaders
 std::map<cstr, Shader> _shaders = std::map<cstr, Shader>();
@@ -129,9 +129,9 @@ void Shader::set_vec4(cstr id, glm::vec4 val) {
   glUniform4f(glGetUniformLocation(this->id, id), val.x, val.y, val.z, val.w);
 }
 
-void Shader::set_mat4(cstr id, glm::mat4 val) {
-  glUniformMatrix4fv(glGetUniformLocation(this->id, id), 1, false,
-                     glm::value_ptr(val));
+void Shader::set_mat4(cstr id, const glm::mat4 &val) {
+  u32 location = glGetUniformLocation(this->id, id);
+  glUniformMatrix4fv(location, 1, false, glm::value_ptr(val));
 }
 
 void Shader::log_errors(u32 shader, i8 type) {

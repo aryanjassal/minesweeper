@@ -5,7 +5,7 @@
 
 #include "shaders.hpp"
 #include "texture.hpp"
-#include "typedefs.hpp"
+#include "utils/types.hpp"
 #include "vertex.hpp"
 
 class Renderer {

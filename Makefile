@@ -24,7 +24,7 @@ CC := @g++
 MKDIR := @mkdir -p
 
 # The flags to be passed to the C compiler (the $CC)
-COMPILER_FLAGS := -I$(INC_DIR) -g
+COMPILER_FLAGS = -I$(INC_DIR) -g $(DEBUG)
 
 # The libraries that our executable is being linked against
 LIBRARIES := -L$(LIB_DIR) -lglfw3
@@ -36,6 +36,11 @@ RM := @rm -rf --
 
 # The default target that compiles the entire project
 all: compile run
+
+set_debug:
+DEBUG := -DDEBUG
+
+debug: set_debug all
 
 prepare:
 	$(ECHO) "Compiling project..."
