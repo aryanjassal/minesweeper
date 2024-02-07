@@ -31,5 +31,5 @@ std::vector<Object *> Objects::all() {
 }
 
 void Object::render() {
-  active_renderer->render(this->vertices, this->texture);
+  active_renderer->render(this->vertices, this->transform, this->texture);
 }

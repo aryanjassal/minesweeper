@@ -9,7 +9,7 @@
 // Keep track of the active camera
 Camera *active_camera = nullptr;
 
-// Hashmap to store all the created objects
+// Hashmap to store all the created cameras
 std::map<cstr, Camera> all_cameras = std::map<cstr, Camera>();
 
 // Activate a camera
@@ -24,7 +24,7 @@ Camera *Cameras::create_ortho(cstr handle, u32 width, u32 height, f32 near,
   cam.near = near;
   cam.far = far;
   cam.projection = glm::ortho(0.0f, static_cast<f32>(width),
-                              static_cast<f32>(height), 0.0f, near, far);
+                              0.0f, static_cast<f32>(height), near, far);
 
   all_cameras[handle] = cam;
   return &all_cameras[handle];

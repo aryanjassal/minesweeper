@@ -14,6 +14,10 @@ C_OBJ_FILES := $(patsubst $(SRC_DIR)%.c, $(OUT_DIR)%.o, $(C_SRC_FILES))
 CPP_OBJ_FILES := $(patsubst $(SRC_DIR)%.cpp, $(OUT_DIR)%.o, $(CPP_SRC_FILES))
 OBJ_FILES := $(C_OBJ_FILES) $(CPP_OBJ_FILES)
 
+# Static files which will not be changed throughout development (usually libraries).
+# Note that all files must be in the output format and not the source format.
+STATIC_BUILD_FILES := $(OUT_DIR)/glad.o $(OUT_DIR)/stb/stb_image.o
+
 # The output file that the program will create after compiling everything
 OUT_FILE := $(OUT_DIR)/minesweeper
 
@@ -24,7 +28,7 @@ CC := @g++
 MKDIR := @mkdir -p
 
 # The flags to be passed to the C compiler (the $CC)
-COMPILER_FLAGS = -I$(INC_DIR) -g $(DEBUG)
+COMPILER_FLAGS = -I$(INC_DIR) -g $(DEBUG) $(args)
 
 # The libraries that our executable is being linked against
 LIBRARIES := -L$(LIB_DIR) -lglfw3
@@ -51,16 +55,23 @@ compile : prepare $(OBJ_FILES)
 
 $(C_OBJ_FILES) : $(OUT_DIR)%.o : $(SRC_DIR)%.c
 	$(MKDIR) $(dir $@)
+	$(ECHO) "Building $(basename $^)"
 	$(CC) $^ $(COMPILER_FLAGS) $(LIBRARIES) -c -o $@
 
 $(CPP_OBJ_FILES) : $(OUT_DIR)%.o : $(SRC_DIR)%.cpp
 	$(MKDIR) $(dir $@)
+	$(ECHO) "Building $(basename $^)"
 	$(CC) $^ $(COMPILER_FLAGS) $(LIBRARIES) -c -o $@
 
 run:
 	$(ECHO) "Running project..."
 	@./$(OUT_FILE)
 
+# Only cleans files which are not marked static
 clean:
-	$(RM) $(OUT_DIR)
+	$(RM) $(filter-out $(STATIC_BUILD_FILES), $(OBJ_FILES))
 	$(RM) $(OUT_FILE)
+
+# Cleans all the files in the build directory
+clean_all:
+	$(RM) $(OUT_DIR)
