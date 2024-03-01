@@ -18,6 +18,7 @@ void Camera::activate() { active_camera = this; }
 // Create an orthographic camera.
 Camera *Cameras::create_ortho(cstr handle, u32 width, u32 height, f32 near,
                               f32 far) {
+  // NOTE: include the handle inside the camera class too???
   Camera cam;
   cam.width = width;
   cam.height = height;

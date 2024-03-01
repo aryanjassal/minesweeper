@@ -7,15 +7,16 @@
 
 void print(str prefix, str msg, bool fail = false) {
   if (fail) {
+    //NOTE: runtime error or exit with print (for consistency)?
     throw std::runtime_error(msg);
   } else {
     std::cout << prefix << " " << msg << std::endl;
   }
 }
 
-void info(str msg, bool fail) { print("[INFO]", msg, fail); }
-void warn(str msg, bool fail) { print("[WARN]", msg, fail); }
-void error(str msg, bool fail) { print("[ERROR]", msg, fail); }
+void info(str msg, bool fail) { print("\033[1;33m INFO \033[0m", msg, fail); }
+void warn(str msg, bool fail) { print("\033[1;32m WARN \033[0m", msg, fail); }
+void error(str msg, bool fail) { print("\033[1;31m ERR \033[0m", msg, fail); }
 
 void gl_geterror() {
   u32 err = glGetError();

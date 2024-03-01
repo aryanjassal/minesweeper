@@ -4,90 +4,7 @@
       "/usr/bin/g++",
       "-Iinclude",
       "-g",
-      "-c",
-      "-o",
-      "build/glad.o",
-      "src/glad.c"
-    ],
-    "directory": "/home/aryanj/Projects/minesweeper",
-    "file": "/home/aryanj/Projects/minesweeper/src/glad.c",
-    "output": "/home/aryanj/Projects/minesweeper/build/glad.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
-      "-Iinclude",
-      "-g",
-      "-c",
-      "-o",
-      "build/keyboard.o",
-      "src/keyboard.cpp"
-    ],
-    "directory": "/home/aryanj/Projects/minesweeper",
-    "file": "/home/aryanj/Projects/minesweeper/src/keyboard.cpp",
-    "output": "/home/aryanj/Projects/minesweeper/build/keyboard.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
-      "-Iinclude",
-      "-g",
-      "-c",
-      "-o",
-      "build/utils.o",
-      "src/utils.cpp"
-    ],
-    "directory": "/home/aryanj/Projects/minesweeper",
-    "file": "/home/aryanj/Projects/minesweeper/src/utils.cpp",
-    "output": "/home/aryanj/Projects/minesweeper/build/utils.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
-      "-Iinclude",
-      "-g",
-      "-c",
-      "-o",
-      "build/shaders.o",
-      "src/shaders.cpp"
-    ],
-    "directory": "/home/aryanj/Projects/minesweeper",
-    "file": "/home/aryanj/Projects/minesweeper/src/shaders.cpp",
-    "output": "/home/aryanj/Projects/minesweeper/build/shaders.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
-      "-Iinclude",
-      "-g",
-      "-c",
-      "-o",
-      "build/window.o",
-      "src/window.cpp"
-    ],
-    "directory": "/home/aryanj/Projects/minesweeper",
-    "file": "/home/aryanj/Projects/minesweeper/src/window.cpp",
-    "output": "/home/aryanj/Projects/minesweeper/build/window.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
-      "-Iinclude",
-      "-g",
-      "-c",
-      "-o",
-      "build/main.o",
-      "src/main.cpp"
-    ],
-    "directory": "/home/aryanj/Projects/minesweeper",
-    "file": "/home/aryanj/Projects/minesweeper/src/main.cpp",
-    "output": "/home/aryanj/Projects/minesweeper/build/main.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
-      "-Iinclude",
-      "-g",
+      "-DDEBUG",
       "-c",
       "-o",
       "build/renderer.o",
@@ -102,6 +19,67 @@
       "/usr/bin/g++",
       "-Iinclude",
       "-g",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/shaders.o",
+      "src/shaders.cpp"
+    ],
+    "directory": "/home/aryanj/Projects/minesweeper",
+    "file": "/home/aryanj/Projects/minesweeper/src/shaders.cpp",
+    "output": "/home/aryanj/Projects/minesweeper/build/shaders.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-Iinclude",
+      "-g",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/window.o",
+      "src/window.cpp"
+    ],
+    "directory": "/home/aryanj/Projects/minesweeper",
+    "file": "/home/aryanj/Projects/minesweeper/src/window.cpp",
+    "output": "/home/aryanj/Projects/minesweeper/build/window.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-Iinclude",
+      "-g",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/keyboard.o",
+      "src/keyboard.cpp"
+    ],
+    "directory": "/home/aryanj/Projects/minesweeper",
+    "file": "/home/aryanj/Projects/minesweeper/src/keyboard.cpp",
+    "output": "/home/aryanj/Projects/minesweeper/build/keyboard.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-Iinclude",
+      "-g",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/main.o",
+      "src/main.cpp"
+    ],
+    "directory": "/home/aryanj/Projects/minesweeper",
+    "file": "/home/aryanj/Projects/minesweeper/src/main.cpp",
+    "output": "/home/aryanj/Projects/minesweeper/build/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-Iinclude",
+      "-g",
+      "-DDEBUG",
       "-c",
       "-o",
       "build/object.o",
@@ -116,13 +94,59 @@
       "/usr/bin/g++",
       "-Iinclude",
       "-g",
+      "-DDEBUG",
       "-c",
       "-o",
-      "build/mesh.o",
-      "src/mesh.cpp"
+      "build/camera.o",
+      "src/camera.cpp"
     ],
     "directory": "/home/aryanj/Projects/minesweeper",
-    "file": "/home/aryanj/Projects/minesweeper/src/mesh.cpp",
-    "output": "/home/aryanj/Projects/minesweeper/build/mesh.o"
+    "file": "/home/aryanj/Projects/minesweeper/src/camera.cpp",
+    "output": "/home/aryanj/Projects/minesweeper/build/camera.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-Iinclude",
+      "-g",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/texture.o",
+      "src/texture.cpp"
+    ],
+    "directory": "/home/aryanj/Projects/minesweeper",
+    "file": "/home/aryanj/Projects/minesweeper/src/texture.cpp",
+    "output": "/home/aryanj/Projects/minesweeper/build/texture.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-Iinclude",
+      "-g",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/utils/logging.o",
+      "src/utils/logging.cpp"
+    ],
+    "directory": "/home/aryanj/Projects/minesweeper",
+    "file": "/home/aryanj/Projects/minesweeper/src/utils/logging.cpp",
+    "output": "/home/aryanj/Projects/minesweeper/build/utils/logging.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-Iinclude",
+      "-g",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/utils/timer.o",
+      "src/utils/timer.cpp"
+    ],
+    "directory": "/home/aryanj/Projects/minesweeper",
+    "file": "/home/aryanj/Projects/minesweeper/src/utils/timer.cpp",
+    "output": "/home/aryanj/Projects/minesweeper/build/utils/timer.o"
   }
 ]

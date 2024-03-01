@@ -1,3 +1,6 @@
+#include <chrono>
+#include <cmath>
+
 #include "camera.hpp"
 #include "glad/glad.h"
 #include "glfw/glfw3.h"
@@ -6,11 +9,16 @@
 #include "renderer.hpp"
 #include "shaders.hpp"
 #include "texture.hpp"
+#include "utils/time.hpp"
+#include "utils/timer.hpp"
 #include "vertex.hpp"
 #include "window.hpp"
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
+
+// TODO(aryanj): change from #include guards to pragma once
+// TODO(aryanj): use R"()" to make shaders to include them at compile time
 
 // Note that all values should be clamped between 0 and 1, then scaled using the
 // transform.scale attribute for maximum control and intuitivity.
@@ -23,18 +31,33 @@ const std::vector<vert> SQUARE_VERTICES = {
 };
 // clang-format on
 
+// Create timers
+auto fps = Timers::create("fps", 500.0f);
+auto physics = Timers::create("physics", 16.6f);
+
 void render() {
   glClear(GL_COLOR_BUFFER_BIT);
 
   for (auto &obj : Objects::all()) {
-    obj->transform.angle = 100*glfwGetTime();
+    obj->transform.angle = 100 * glfwGetTime();
     obj->render();
   }
 
+  glfwSwapInterval(0);
   glfwSwapBuffers(window);
 }
 
 void update() {
+  // Tick all the timers.
+  Timers::tick(Time::delta);
+
+  // if (Timers::test("physics")) {
+  //   for (auto &obj : Objects::all()) {
+  //     obj->transform.angle = 100 * glfwGetTime();
+  //   }
+  // }
+
+  // Poll new input events before processing them.
   glfwPollEvents();
 
   // Input processing here
@@ -62,9 +85,29 @@ int main() {
   sq->transform.scale = glm::vec2(100.0f);
   sq->transform.origin = glm::vec2(0.5f);
 
+  std::chrono::high_resolution_clock::time_point d_start, d_end;
   while (!glfwWindowShouldClose(window) && !keys[GLFW_KEY_ESCAPE]) {
+    // Calculate the delta time. Note that `.count()` returns the value to the
+    // nearest integer, so the division is required to get more accuracy. This
+    // converts it from microseconds to milliseconds, with a ratio of 1000:1
+    Time::delta =
+        std::chrono::duration_cast<std::chrono::microseconds>(d_end - d_start)
+            .count() /
+        1000.0f;
+
+    d_start = std::chrono::high_resolution_clock::now();
     render();
     update();
+    d_end = std::chrono::high_resolution_clock::now();
+    // TODO(aryanj): precise fps control code in (new?) rosewaltz journey code
+
+    // Timer must exist or crash happens.
+    if (*Timers::get("fps")) {
+      i32 fps = std::ceil(1.0f / static_cast<double>(Time::delta / 1000.0f));
+      str s;
+      win::title((s + "fps: " + std::to_string(fps)).c_str());
+      Timers::reset("fps");
+    }
   }
 
   return 0;

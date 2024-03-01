@@ -1,5 +1,6 @@
 // clang-format off
 #include "glad/glad.h"
+#include "glfw/glfw3.h"
 // clang-format on
 
 #include "window.hpp"
@@ -40,3 +41,5 @@ void win::init(cstr title, u32 width, u32 height) {
 void win::init(cstr title, glm::vec2 dimensions) {
   win::init(title, dimensions.x, dimensions.y);
 }
+
+void win::title(cstr title) { glfwSetWindowTitle(window, title); }
