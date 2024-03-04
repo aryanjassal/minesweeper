@@ -1,5 +1,4 @@
-#ifndef __TRANSFORM_HPP__
-#define __TRANSFORM_HPP__
+#pragma once
 
 #include "glm/glm.hpp"  // IWYU pragma: keep
 #include "utils/types.hpp"
@@ -19,5 +18,3 @@ using Transform = struct transform_t {
   transform_t(glm::vec3 pos, glm::vec2 scale, f32 angle)
       : position{pos}, scale{scale}, angle{angle}, origin(0) {}
 };
-
-#endif

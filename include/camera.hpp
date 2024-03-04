@@ -1,5 +1,4 @@
-#ifndef __CAMERA_HPP__
-#define __CAMERA_HPP__
+#pragma once
 
 #include "glm/glm.hpp"  // IWYU pragma: keep
 #include "utils/types.hpp"
@@ -37,5 +36,3 @@ Camera *get(cstr handle);
 // Store the active camera whose projection and view matrices will be used for
 // offsetting objects.
 extern Camera *active_camera;
-
-#endif

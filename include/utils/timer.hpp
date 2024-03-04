@@ -1,5 +1,4 @@
-#ifndef __UTILS_TIMER_HPP__
-#define __UTILS_TIMER_HPP__
+#pragma once
 
 #include <vector>
 
@@ -50,5 +49,3 @@ void tick(f64 time_ms);
 std::vector<Timer *> all();
 
 }  // namespace Timers
-
-#endif

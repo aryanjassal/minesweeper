@@ -1,5 +1,4 @@
-#ifndef __SPRITE_HPP__
-#define __SPRITE_HPP__
+#pragma once
 
 #include <vector>
 
@@ -31,5 +30,3 @@ Texture *create(cstr handle, cstr file_path, bool transparent = false,
                 i32 filter = GL_LINEAR);
 
 }
-
-#endif

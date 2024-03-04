@@ -1,5 +1,4 @@
-#ifndef __UTILS_TIME_HPP__
-#define __UTILS_TIME_HPP__
+#pragma once
 
 #include "utils/types.hpp"
 
@@ -9,5 +8,3 @@ namespace Time {
 f64 delta;
 
 }  // namespace Time
-
-#endif

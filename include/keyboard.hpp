@@ -1,5 +1,4 @@
-#ifndef __KEYBOARD__HPP__
-#define __KEYBOARD__HPP__
+#pragma once
 
 #include <map>
 
@@ -31,5 +30,3 @@ void update();
 }  // namespace kb
 
 extern std::map<u16, key> keys;
-
-#endif

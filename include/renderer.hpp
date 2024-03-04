@@ -1,5 +1,4 @@
-#ifndef __RENDERER_HPP__
-#define __RENDERER_HPP__
+#pragma once
 
 #include <vector>
 
@@ -44,5 +43,3 @@ Renderer *create(cstr handle, Shader &shader);
 }
 
 extern Renderer *active_renderer;
-
-#endif

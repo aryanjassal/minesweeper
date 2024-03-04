@@ -1,5 +1,4 @@
-#ifndef __VERTEX_HPP__
-#define __VERTEX_HPP__
+#pragma once
 
 #include "glm/glm.hpp"
 
@@ -11,5 +10,3 @@ struct vert {
   vert(glm::vec3 pos) : pos{pos}, tex{glm::vec2(0)} {}
   vert(glm::vec3 pos, glm::vec2 tex) : pos{pos}, tex{tex} {}
 };
-
-#endif

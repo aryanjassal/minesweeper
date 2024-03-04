@@ -1,5 +1,4 @@
-#ifndef __WINDOW_HPP__
-#define __WINDOW_HPP__
+#pragma once
 
 #include "glfw/glfw3.h"
 #include "glm/glm.hpp"  // IWYU pragma: keep
@@ -17,5 +16,3 @@ void init(cstr title, glm::vec2 dimensions);
 void title(cstr title);
 
 }  // namespace win
-
-#endif

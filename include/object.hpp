@@ -1,5 +1,4 @@
-#ifndef __OBJECT_HPP__
-#define __OBJECT_HPP__
+#pragma once
 
 #include <vector>
 
@@ -30,5 +29,3 @@ Object *create(cstr handle, std::vector<vert> vertices,
 std::vector<Object *> all();
 
 }  // namespace Objects
-
-#endif

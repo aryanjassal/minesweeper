@@ -1,5 +1,4 @@
-#ifndef __SHADERS_HPP__
-#define __SHADERS_HPP__
+#pragma once
 
 #include <vector>
 
@@ -64,5 +63,3 @@ namespace Shaders {
 Shader *get(cstr handle);
 
 }  // namespace Shaders
-
-#endif

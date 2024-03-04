@@ -1,5 +1,4 @@
-#ifndef __UTILS_HPP__
-#define __UTILS_HPP__
+#pragma once
 
 #include "utils/types.hpp"
 
@@ -10,5 +9,3 @@ void error(str msg, bool fail = true);
 // Checks if there was an error in OpenGL, and quits if there was.
 // TODO(aryanj): actually make this good
 void gl_geterror();
-
-#endif

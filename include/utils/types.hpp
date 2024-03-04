@@ -1,5 +1,4 @@
-#ifndef __UTILS_TYPES_HPP__
-#define __UTILS_TYPES_HPP__
+#pragma once
 
 #include <cstddef>
 #include <cstdint>
@@ -19,5 +18,3 @@ using usize = size_t;
 using uchar = unsigned char;
 using cstr = const char *;
 using str = std::string;
-
-#endif
