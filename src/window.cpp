@@ -1,6 +1,6 @@
 // clang-format off
 #include "glad/glad.h"
-#include "glfw/glfw3.h"
+#include <GLFW/glfw3.h>
 // clang-format on
 
 #include "window.hpp"
@@ -12,6 +12,10 @@ GLFWwindow* window = nullptr;
 void win::init(cstr title, u32 width, u32 height) {
   if (!glfwInit()) {
     throw std::runtime_error("GLFW failed to initialise.");
+  }
+
+  if (title == nullptr) {
+    title = "";
   }
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

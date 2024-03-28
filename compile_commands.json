@@ -3,6 +3,7 @@
     "arguments": [
       "/usr/bin/g++",
       "-Iinclude",
+      "-Iexternal",
       "-g",
       "-DDEBUG",
       "-c",
@@ -18,6 +19,7 @@
     "arguments": [
       "/usr/bin/g++",
       "-Iinclude",
+      "-Iexternal",
       "-g",
       "-DDEBUG",
       "-c",
@@ -33,6 +35,7 @@
     "arguments": [
       "/usr/bin/g++",
       "-Iinclude",
+      "-Iexternal",
       "-g",
       "-DDEBUG",
       "-c",
@@ -48,36 +51,7 @@
     "arguments": [
       "/usr/bin/g++",
       "-Iinclude",
-      "-g",
-      "-DDEBUG",
-      "-c",
-      "-o",
-      "build/keyboard.o",
-      "src/keyboard.cpp"
-    ],
-    "directory": "/home/aryanj/Projects/minesweeper",
-    "file": "/home/aryanj/Projects/minesweeper/src/keyboard.cpp",
-    "output": "/home/aryanj/Projects/minesweeper/build/keyboard.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
-      "-Iinclude",
-      "-g",
-      "-DDEBUG",
-      "-c",
-      "-o",
-      "build/main.o",
-      "src/main.cpp"
-    ],
-    "directory": "/home/aryanj/Projects/minesweeper",
-    "file": "/home/aryanj/Projects/minesweeper/src/main.cpp",
-    "output": "/home/aryanj/Projects/minesweeper/build/main.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
-      "-Iinclude",
+      "-Iexternal",
       "-g",
       "-DDEBUG",
       "-c",
@@ -93,21 +67,7 @@
     "arguments": [
       "/usr/bin/g++",
       "-Iinclude",
-      "-g",
-      "-DDEBUG",
-      "-c",
-      "-o",
-      "build/camera.o",
-      "src/camera.cpp"
-    ],
-    "directory": "/home/aryanj/Projects/minesweeper",
-    "file": "/home/aryanj/Projects/minesweeper/src/camera.cpp",
-    "output": "/home/aryanj/Projects/minesweeper/build/camera.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
-      "-Iinclude",
+      "-Iexternal",
       "-g",
       "-DDEBUG",
       "-c",
@@ -123,30 +83,16 @@
     "arguments": [
       "/usr/bin/g++",
       "-Iinclude",
+      "-Iexternal",
       "-g",
       "-DDEBUG",
       "-c",
       "-o",
-      "build/utils/logging.o",
-      "src/utils/logging.cpp"
+      "build/main.o",
+      "src/main.cpp"
     ],
     "directory": "/home/aryanj/Projects/minesweeper",
-    "file": "/home/aryanj/Projects/minesweeper/src/utils/logging.cpp",
-    "output": "/home/aryanj/Projects/minesweeper/build/utils/logging.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
-      "-Iinclude",
-      "-g",
-      "-DDEBUG",
-      "-c",
-      "-o",
-      "build/utils/timer.o",
-      "src/utils/timer.cpp"
-    ],
-    "directory": "/home/aryanj/Projects/minesweeper",
-    "file": "/home/aryanj/Projects/minesweeper/src/utils/timer.cpp",
-    "output": "/home/aryanj/Projects/minesweeper/build/utils/timer.o"
+    "file": "/home/aryanj/Projects/minesweeper/src/main.cpp",
+    "output": "/home/aryanj/Projects/minesweeper/build/main.o"
   }
 ]
