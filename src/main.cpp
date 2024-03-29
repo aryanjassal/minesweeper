@@ -12,6 +12,7 @@
 #include "renderer.hpp"
 #include "shaders.hpp"
 #include "texture.hpp"
+#include "utils/sleep.hpp"
 #include "utils/time.hpp"
 #include "utils/timer.hpp"
 #include "vertex.hpp"
@@ -19,6 +20,9 @@
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
+
+const int MAX_FPS = 480;
+const double MIN_FRAME_TIME = 1.0f / MAX_FPS;
 
 // TODO use R"()" to make shaders to include them at compile time
 // TODO implement batch rendering, making one buffer instead of new draw call
@@ -38,7 +42,7 @@ const std::vector<vert> SQUARE_VERTICES = {
 // clang-format on
 
 // Create timers
-auto fps = Timers::create("fps", 500.0f);
+auto fps = Timers::create("fps", 100.0f);
 
 void render() {
   glClear(GL_COLOR_BUFFER_BIT);
@@ -84,7 +88,14 @@ int main() {
   auto sq = Objects::create("square", SQUARE_VERTICES, *mine);
   sq->transform = Transform(glm::vec3(0.0f), glm::vec2(100.0f));
 
-  std::chrono::high_resolution_clock::time_point d_start, d_end;
+  // Define the `delta_start`, `delta_end`, and `update_end` timestamps. The
+  // delta time is the actual time between frames, and the update time is used
+  // to calculate the sleep time for each frame to not exceed a set framerate.
+  std::chrono::high_resolution_clock::time_point d_start, d_end, u_end;
+
+  // This is the main event loop. This loop runs the `render()` and `update()`
+  // method in that order.
+  // TODO: add some sort of a ticked update too, like `FixedUpdate()` in Unity
   while (!glfwWindowShouldClose(window) && !keys[GLFW_KEY_ESCAPE]) {
     // Calculate the delta time. Note that `.count()` returns the value to the
     // nearest integer, so the division is required to get more accuracy. This
@@ -97,13 +108,20 @@ int main() {
     d_start = std::chrono::high_resolution_clock::now();
     render();
     update();
-    d_end = std::chrono::high_resolution_clock::now();
-    // TODO precise fps control code in (new?) rosewaltz journey code
 
-    // Timer must exist or crash happens.
+    // Use smart sleep to update exactly n times a second, where n is the
+    // desired fps of the game.
+    u_end = std::chrono::high_resolution_clock::now();
+    double sleep_time =
+        MIN_FRAME_TIME -
+        (std::chrono::duration<double>(u_end - d_start).count());
+    if (sleep_time > 0.0f) smart_sleep(sleep_time, 0.0005f);
+    d_end = std::chrono::high_resolution_clock::now();
+
+    // NOTE: Timer must exist or crash happens.
     if (*Timers::get("fps")) {
-      i32 fps = std::ceil(1.0f / static_cast<double>(Time::delta / 1000.0f));
-      str s;
+      int fps = std::ceil(1.0f / static_cast<double>(Time::delta / 1000.0f));
+      std::string s;
       win::title((s + "fps: " + std::to_string(fps)).c_str());
       Timers::reset("fps");
     }
