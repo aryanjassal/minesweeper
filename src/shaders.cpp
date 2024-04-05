@@ -11,10 +11,10 @@
 #include "utils/types.hpp"
 
 // Hashmap to store all created shaders
-std::map<cstr, Shader> _shaders = std::map<cstr, Shader>();
+std::map<str, Shader> _shaders = std::map<str, Shader>();
 
 // Reads a file at the location `path` and returns the contents as a string
-str read_file(cstr path) {
+str read_file(str path) {
   std::ifstream f(path);
   if (!f.is_open()) {
     str s;
@@ -26,17 +26,17 @@ str read_file(cstr path) {
   return out.str();
 }
 
-Shader::Shader(cstr handle, cstr _vert, cstr _frag, cstr _geom) {
+Shader::Shader(str handle, str _vert, str _frag, str _geom) {
   this->handle = handle;
 
-  if (_vert) {
+  if (!_vert.empty()) {
     this->vert = read_file(_vert);
   } else {
     // fallback vertex shader
     this->vert = read_file("src/shaders/pass/pass.vs");
   }
 
-  if (_frag) {
+  if (!_frag.empty()) {
     this->frag = read_file(_frag);
   } else {
     // fallback fragment shader
@@ -137,7 +137,7 @@ void Shader::set_mat4(cstr id, const glm::mat4 &val) {
 void Shader::log_errors(u32 shader, i8 type) {
   i32 compiled = false;
 
-  char log[512];
+  char log[512];  // clang-format ignore
 
   if (type) {
     cstr shader_type;
@@ -160,16 +160,19 @@ void Shader::log_errors(u32 shader, i8 type) {
     if (!compiled) {
       glGetShaderInfoLog(shader, 512, nullptr, log);
       str s;
-      error(s + "Shader '" + this->handle + "' could not compile " +
-            shader_type + "\n" + log);
+      error(
+          s + "Shader '" + this->handle + "' could not compile " + shader_type +
+          "\n" + log
+      );
     }
   } else {
     glGetProgramiv(shader, GL_LINK_STATUS, &compiled);
     if (!compiled) {
       glGetProgramInfoLog(shader, 512, nullptr, log);
       str s;
-      error(s + "Shader program '" + this->handle + "' failed to compile.\n" +
-            log);
+      error(
+          s + "Shader program '" + this->handle + "' failed to compile.\n" + log
+      );
     }
   }
 }

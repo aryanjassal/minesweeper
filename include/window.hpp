@@ -10,10 +10,10 @@ extern GLFWwindow* window;
 namespace win {
 
 // Create a new window.
-void init(cstr title, u32 width, u32 height);
-void init(cstr title, glm::vec2 dimensions);
+void init(str title, u32 width, u32 height);
+void init(str title, glm::vec2 dimensions);
 
 // Change the title of the window.
-void title(cstr title);
+void title(str title);
 
 }  // namespace win

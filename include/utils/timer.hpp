@@ -11,7 +11,7 @@ class Timer {
   f64 time_current, time_limit;
 
   // Unique name for each timer.
-  cstr handle;
+  str handle;
 
   // Tick the time. Note all the times are in milliseconds.
   void tick(f64 time_ms) { time_current += time_ms; }
@@ -29,18 +29,18 @@ class Timer {
 namespace Timers {
 
 // Create a new timer.
-Timer *create(cstr handle, f64 threshold_ms);
+Timer *create(str handle, f64 threshold_ms);
 
 // Get a timer using its handle.
-Timer *get(cstr handle);
+Timer *get(str handle);
 
 // Reset the timer with the given handle. Shorthand for
 // `Timers::get("handle")->reset()`
-void reset(cstr handle);
+void reset(str handle);
 
 // Test the timer with the given handle. Shorthand for
 // `Timers::get("handle")->test()`
-bool test(cstr handle);
+bool test(str handle);
 
 // Tick all the timers together.
 void tick(f64 time_ms);

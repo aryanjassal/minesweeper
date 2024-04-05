@@ -21,8 +21,7 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 
-const int MAX_FPS = 480;
-const double MIN_FRAME_TIME = 1.0f / MAX_FPS;
+const i32 MAX_FPS = 480;
 
 // TODO use R"()" to make shaders to include them at compile time
 // TODO implement batch rendering, making one buffer instead of new draw call
@@ -69,7 +68,7 @@ void update() {
 }
 
 int main() {
-  win::init(nullptr, SCREEN_WIDTH, SCREEN_HEIGHT);
+  win::init("Minesweeper", SCREEN_WIDTH, SCREEN_HEIGHT);
   kb::init();
 
   // TODO get a shader wrapper class like how everything else is
@@ -80,8 +79,9 @@ int main() {
   renderer->activate();
 
   // Create cameras, textures, and objects.
-  Camera *cam = Cameras::create_ortho("main", SCREEN_WIDTH, SCREEN_HEIGHT,
-                                      -100.0f, 100.0f);
+  Camera *cam = Cameras::create_ortho(
+      "main", SCREEN_WIDTH, SCREEN_HEIGHT, -100.0f, 100.0f
+  );
   cam->activate();
 
   auto mine = Textures::create("one", "assets/cellmine.png");
@@ -113,7 +113,7 @@ int main() {
     // desired fps of the game.
     u_end = std::chrono::high_resolution_clock::now();
     double sleep_time =
-        MIN_FRAME_TIME -
+        (1.0f / MAX_FPS) -
         (std::chrono::duration<double>(u_end - d_start).count());
     if (sleep_time > 0.0f) smart_sleep(sleep_time, 0.0005f);
     d_end = std::chrono::high_resolution_clock::now();

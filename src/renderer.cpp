@@ -19,9 +19,9 @@
 Renderer *active_renderer = nullptr;
 
 // Hashmap to store all the created renderers
-std::map<cstr, Renderer> all_renderers = std::map<cstr, Renderer>();
+std::map<str, Renderer> all_renderers = std::map<str, Renderer>();
 
-Renderer *Renderers::create(cstr handle, Shader &shader) {
+Renderer *Renderers::create(str handle, Shader &shader) {
   // Create a new renderer object and get a persistent pointer to it.
   Renderer rend;
   rend.shader = shader;
@@ -40,8 +40,10 @@ Renderer *Renderers::create(cstr handle, Shader &shader) {
 
   // Used `nullptr` here as it doesn't make a difference for the first entry
   glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(f32) * 5, nullptr);
-  glVertexAttribPointer(1, 2, GL_FLOAT, false, sizeof(f32) * 5,
-                        reinterpret_cast<void *>(sizeof(f32) * 3));
+  glVertexAttribPointer(
+      1, 2, GL_FLOAT, false, sizeof(f32) * 5,
+      reinterpret_cast<void *>(sizeof(f32) * 3)
+  );
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
 
@@ -65,8 +67,9 @@ void Renderer::activate() {
   glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
 }
 
-void Renderer::render(std::vector<vert> verts, Transform transform,
-                      Texture texture) {
+void Renderer::render(
+    std::vector<vert> verts, Transform transform, Texture texture
+) {
 #ifdef DEBUG
   if (active_camera == nullptr) {
     error("At least one camera must be active!");
@@ -98,8 +101,9 @@ void Renderer::render(std::vector<vert> verts, Transform transform,
 
   // TODO(aryanj): do the vertices change position? if not, then no need to
   // update them.
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vert) * verts.size(), &verts[0],
-               GL_DYNAMIC_DRAW);
+  glBufferData(
+      GL_ARRAY_BUFFER, sizeof(vert) * verts.size(), &verts[0], GL_DYNAMIC_DRAW
+  );
   glDrawArrays(GL_TRIANGLE_STRIP, 0, verts.size());
 
   // Texture unbind needed?

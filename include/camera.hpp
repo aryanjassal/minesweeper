@@ -5,7 +5,7 @@
 
 class Camera {
  public:
-  u32 near, far;
+  f32 near, far;
   glm::mat4 projection;
   glm::mat4 view = glm::mat4(1.0f);
 
@@ -25,11 +25,11 @@ class Camera {
 namespace Cameras {
 
 // Create a new orthographic camera.
-Camera *create_ortho(cstr handle, u32 width, u32 height, f32 near, f32 far);
-Camera *create_ortho(cstr handle, glm::uvec2 dimensions, f32 near, f32 far);
+Camera *create_ortho(str handle, u32 width, u32 height, f32 near, f32 far);
+Camera *create_ortho(str handle, glm::uvec2 dimensions, f32 near, f32 far);
 
 // Get a camera using its handle.
-Camera *get(cstr handle);
+Camera *get(str handle);
 
 }  // namespace Cameras
 

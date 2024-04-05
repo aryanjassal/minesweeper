@@ -10,7 +10,7 @@
 class Object {
  public:
   u32 id;
-  cstr handle;
+  str handle;
 
   std::vector<vert> vertices;
   Transform transform;
@@ -22,7 +22,7 @@ class Object {
 namespace Objects {
 
 // Create a new object with the given parameters.
-Object *create(cstr handle, std::vector<vert> vertices,
+Object *create(str handle, std::vector<vert> vertices,
                Texture texture = Texture());
 
 // Return a vector of all active objects.

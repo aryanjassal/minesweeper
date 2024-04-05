@@ -9,13 +9,9 @@
 
 GLFWwindow* window = nullptr;
 
-void win::init(cstr title, u32 width, u32 height) {
+void win::init(str title, u32 width, u32 height) {
   if (!glfwInit()) {
     throw std::runtime_error("GLFW failed to initialise.");
-  }
-
-  if (title == nullptr) {
-    title = "";
   }
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -24,7 +20,7 @@ void win::init(cstr title, u32 width, u32 height) {
   glfwWindowHint(GLFW_RESIZABLE, false);
   glfwWindowHint(GLFW_SAMPLES, 16);
 
-  window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+  window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
   if (window == nullptr) {
     throw std::runtime_error("Game window failed to initialise.");
   }
@@ -42,8 +38,8 @@ void win::init(cstr title, u32 width, u32 height) {
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void win::init(cstr title, glm::vec2 dimensions) {
+void win::init(str title, glm::vec2 dimensions) {
   win::init(title, dimensions.x, dimensions.y);
 }
 
-void win::title(cstr title) { glfwSetWindowTitle(window, title); }
+void win::title(str title) { glfwSetWindowTitle(window, title.c_str()); }

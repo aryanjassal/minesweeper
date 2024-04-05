@@ -1,6 +1,9 @@
-# Variables which should be modified for each project
-PKGS = glfw3
-LIBS = glad=deps/glad.sh glm=deps/glm.sh stb=deps/stb.sh
+# Set dependencies for compiling and running the application
+PKGS := glfw3 wayland-client wayland-cursor
+LIBS := glad=deps/glad.sh glm=deps/glm.sh stb=deps/stb.sh
+
+# Should we use wayland or not?
+WAYLAND := true
 
 # Useful directories variable
 SRC_DIR := src
@@ -13,6 +16,10 @@ EXT_DIR := external
 # STATIC_DIR := $(OUT_DIR)/$(EXT_DIR)
 # STATIC_BUILD_FILES := $(wildcard $(STATIC_DIR)/*)
 # # STATIC_BUILD_FILES := $(OUT_DIR)/glad.o $(OUT_DIR)/stb/stb_image.o
+
+# Set wayland deps
+WAYLAND_LIBS := $(if $(WAYLAND),wayland-client wayland-cursor,)
+PKGS += $(WAYLAND_LIBS)
 
 # The output file that the program will create after compiling everything
 OUT_FILE := $(OUT_DIR)/$(notdir $(CURDIR))
@@ -105,7 +112,12 @@ main:
 
 run:
 	@echo "Running project..."
-	@./$(OUT_FILE)
+	@if [ -z "$(WAYLAND)" ]; then \
+		./$(OUT_FILE); \
+	else \
+		export GLFW_BACKEND=wayland; \
+		./$(OUT_FILE); \
+	fi
 
 # Only cleans files which are not marked static
 clean:

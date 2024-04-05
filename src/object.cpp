@@ -8,8 +8,9 @@ std::vector<Object> all_objects = std::vector<Object>();
 // Keep track of the next id for an instantiated object
 u32 next_id = 0;
 
-Object *Objects::create(cstr handle, std::vector<vert> vertices,
-                        Texture texture) {
+Object *Objects::create(
+    str handle, std::vector<vert> vertices, Texture texture
+) {
   Object obj;
   obj.handle = handle;
   obj.vertices = vertices;

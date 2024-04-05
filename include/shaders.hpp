@@ -16,7 +16,7 @@ class Shader {
   u32 id;
 
   // User-friendly identifier for the shader
-  cstr handle;
+  str handle;
 
   // Compiles the shader from the file locations, checking for errors and
   // finally making the shader usable.
@@ -26,8 +26,7 @@ class Shader {
   // is `nullptr` which would result in a simple passthrough shader. Note that
   // no compilation or error checking is done in this step. Before activating
   // the shader, `compile()` must be called.
-  Shader(cstr handle, cstr vert = nullptr, cstr frag = nullptr,
-         cstr geom = nullptr);
+  Shader(str handle, str vert = str(), str frag = str(), str geom = str());
   Shader() = default;
 
   // Uses this shader for rendering. Note that this must be called to use the
@@ -60,6 +59,6 @@ class Shader {
 
 namespace Shaders {
 
-Shader *get(cstr handle);
+Shader *get(str handle);
 
 }  // namespace Shaders

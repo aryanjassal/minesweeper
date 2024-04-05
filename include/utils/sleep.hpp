@@ -1,5 +1,7 @@
 #pragma once
 
+#include "utils/types.hpp"
+
 // The `smart_sleep` function sleeps for the precisely the specified time. To
 // achieve this, the program sleeps until `time - margin`, after which it runs a
 // loop to keep the CPU busy until the time is finished. This mitigates the
@@ -7,4 +9,4 @@
 //
 // The 'time' parameter controls the exact amount of time to sleep for.
 // The 'margin' parameter controls the margin when the sleep ends and the loop starts.
-void smart_sleep(double time, double margin);
+void smart_sleep(f64 time, f64 margin);

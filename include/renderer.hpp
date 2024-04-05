@@ -15,7 +15,7 @@ class Renderer {
   Shader shader;
 
   // Store the handle of the renderer for easier debugging.
-  cstr handle;
+  str handle;
 
   Renderer() = default;
   ~Renderer();
@@ -38,7 +38,7 @@ class Renderer {
 
 namespace Renderers {
 
-Renderer *create(cstr handle, Shader &shader);
+Renderer *create(str handle, Shader &shader);
 
 }
 

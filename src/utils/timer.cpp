@@ -7,10 +7,10 @@
 #include "utils/types.hpp"
 
 // Hashmap of all timer objects
-std::map<cstr, Timer> all_timers = std::map<cstr, Timer>();
+std::map<str, Timer> all_timers = std::map<str, Timer>();
 
 // Create a new timer
-Timer *Timers::create(cstr handle, f64 threshold_ms) {
+Timer *Timers::create(str handle, f64 threshold_ms) {
   // Check if a timer with the handle already exists.
   if (all_timers.find(handle) != all_timers.end()) {
     str s;
@@ -29,7 +29,7 @@ Timer *Timers::create(cstr handle, f64 threshold_ms) {
 }
 
 // Get a timer from the hashmap
-Timer *Timers::get(cstr handle) {
+Timer *Timers::get(str handle) {
   if (all_timers.find(handle) == all_timers.end()) {
     str s;
     warn(s + "Timer '" + handle + "' not found.");
@@ -40,10 +40,10 @@ Timer *Timers::get(cstr handle) {
 }
 
 // Reset a given timer using the shorthand
-void Timers::reset(cstr handle) { Timers::get(handle)->reset(); }
+void Timers::reset(str handle) { Timers::get(handle)->reset(); }
 
 // Test a given timer using the shorthand
-bool Timers::test(cstr handle) { return Timers::get(handle)->test(); }
+bool Timers::test(str handle) { return Timers::get(handle)->test(); }
 
 // Tick all the timers
 void Timers::tick(f64 time_ms) {

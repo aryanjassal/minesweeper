@@ -7,14 +7,15 @@
 #include "utils/logging.hpp"
 
 // Hashmap to store all the created objects
-std::map<cstr, Texture> all_textures = std::map<cstr, Texture>();
+std::map<str, Texture> all_textures = std::map<str, Texture>();
 
 // Bind texture to "curent texture"
 void Texture::bind() { glBindTexture(GL_TEXTURE_2D, this->id); }
 
 // Create a new texture
-Texture *Textures::create(cstr handle, cstr file_path, bool transparent,
-                          i32 filter) {
+Texture *Textures::create(
+    str handle, str file_path, bool transparent, i32 filter
+) {
   if (all_textures.find(handle) != all_textures.end()) {
     str s;
     error(s + "A texture with handle '" + handle + "' already exists.");
@@ -27,7 +28,8 @@ Texture *Textures::create(cstr handle, cstr file_path, bool transparent,
   glGenTextures(1, &texture.id);
 
   // Discarding the value of the number of channels
-  u8 *data = stbi_load(file_path, &texture.width, &texture.height, nullptr, 4);
+  u8 *data =
+      stbi_load(file_path.c_str(), &texture.width, &texture.height, nullptr, 4);
 
   // Check if the image failed to load
   if (!data) {
@@ -42,10 +44,14 @@ Texture *Textures::create(cstr handle, cstr file_path, bool transparent,
 
   // Generate the texture
   glBindTexture(GL_TEXTURE_2D, texture.id);
-  glTexImage2D(GL_TEXTURE_2D, 0, image_channels, texture.width, texture.height,
-               0, image_channels, GL_UNSIGNED_BYTE, data);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture.width, texture.height, 0,
-               GL_RGBA, GL_UNSIGNED_BYTE, data);
+  glTexImage2D(
+      GL_TEXTURE_2D, 0, image_channels, texture.width, texture.height, 0,
+      image_channels, GL_UNSIGNED_BYTE, data
+  );
+  glTexImage2D(
+      GL_TEXTURE_2D, 0, GL_RGBA, texture.width, texture.height, 0, GL_RGBA,
+      GL_UNSIGNED_BYTE, data
+  );
   stbi_image_free(data);
 
   // Set texture wrap and filter settings.

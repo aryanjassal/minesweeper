@@ -7,7 +7,7 @@
 
 void print(str prefix, str msg, bool fail = false) {
   if (fail) {
-    //NOTE: runtime error or exit with print (for consistency)?
+    // NOTE: runtime error or exit with print (for consistency)?
     throw std::runtime_error(msg);
   } else {
     std::cout << prefix << " " << msg << std::endl;
