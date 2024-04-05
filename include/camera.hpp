@@ -3,6 +3,12 @@
 #include "glm/glm.hpp"  // IWYU pragma: keep
 #include "utils/types.hpp"
 
+// Where to position the coordinate 0,0
+#define CAM_ORIGIN_TOP_LEFT 0
+#define CAM_ORIGIN_TOP_RIGHT 1
+#define CAM_ORIGIN_BOTTOM_LEFT 2
+#define CAM_ORIGIN_BOTTOM_RIGHT 3
+
 class Camera {
  public:
   f32 near, far;
@@ -25,8 +31,14 @@ class Camera {
 namespace Cameras {
 
 // Create a new orthographic camera.
-Camera *create_ortho(str handle, u32 width, u32 height, f32 near, f32 far);
-Camera *create_ortho(str handle, glm::uvec2 dimensions, f32 near, f32 far);
+Camera *create_ortho(
+    str handle, u32 width, u32 height, f32 near, f32 far,
+    u8 origin = CAM_ORIGIN_BOTTOM_LEFT
+);
+Camera *create_ortho(
+    str handle, glm::uvec2 dimensions, f32 near, f32 far,
+    u8 origin = CAM_ORIGIN_BOTTOM_LEFT
+);
 
 // Get a camera using its handle.
 Camera *get(str handle);

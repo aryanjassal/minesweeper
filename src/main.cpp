@@ -5,6 +5,7 @@
 
 #include <chrono>
 #include <cmath>
+#include <string>
 
 #include "camera.hpp"
 #include "keyboard.hpp"
@@ -80,7 +81,7 @@ int main() {
 
   // Create cameras, textures, and objects.
   Camera *cam = Cameras::create_ortho(
-      "main", SCREEN_WIDTH, SCREEN_HEIGHT, -100.0f, 100.0f
+      "main", SCREEN_WIDTH, SCREEN_HEIGHT, -100.0f, 100.0f, CAM_ORIGIN_TOP_LEFT
   );
   cam->activate();
 
@@ -112,17 +113,17 @@ int main() {
     // Use smart sleep to update exactly n times a second, where n is the
     // desired fps of the game.
     u_end = std::chrono::high_resolution_clock::now();
-    double sleep_time =
-        (1.0f / MAX_FPS) -
-        (std::chrono::duration<double>(u_end - d_start).count());
+    f64 sleep_time = (1.0f / MAX_FPS) -
+                     (std::chrono::duration<f64>(u_end - d_start).count());
+
     if (sleep_time > 0.0f) smart_sleep(sleep_time, 0.0005f);
+
     d_end = std::chrono::high_resolution_clock::now();
 
-    // NOTE: Timer must exist or crash happens.
     if (*Timers::get("fps")) {
-      int fps = std::ceil(1.0f / static_cast<double>(Time::delta / 1000.0f));
-      std::string s;
-      win::title((s + "fps: " + std::to_string(fps)).c_str());
+      f64 frame_time = Time::delta / 1000.0f;
+      u32 fps = std::ceil(1.0f / frame_time);
+      win::title("fps: " + std::to_string(fps));
       Timers::reset("fps");
     }
   }

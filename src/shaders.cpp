@@ -17,8 +17,7 @@ std::map<str, Shader> _shaders = std::map<str, Shader>();
 str read_file(str path) {
   std::ifstream f(path);
   if (!f.is_open()) {
-    str s;
-    error(s + "Failed to open '" + path + "'");
+    error("Failed to open '" + path + "'");
   }
   std::stringstream out;
   out << f.rdbuf();
@@ -159,9 +158,8 @@ void Shader::log_errors(u32 shader, i8 type) {
     glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
     if (!compiled) {
       glGetShaderInfoLog(shader, 512, nullptr, log);
-      str s;
       error(
-          s + "Shader '" + this->handle + "' could not compile " + shader_type +
+          "Shader '" + this->handle + "' could not compile " + shader_type +
           "\n" + log
       );
     }
@@ -169,19 +167,15 @@ void Shader::log_errors(u32 shader, i8 type) {
     glGetProgramiv(shader, GL_LINK_STATUS, &compiled);
     if (!compiled) {
       glGetProgramInfoLog(shader, 512, nullptr, log);
-      str s;
-      error(
-          s + "Shader program '" + this->handle + "' failed to compile.\n" + log
-      );
+      error("Shader program '" + this->handle + "' failed to compile.\n" + log);
     }
   }
 }
 
-Shader *Shaders::get(cstr handle) {
+Shader *Shaders::get(str handle) {
   auto shader = _shaders.find(handle);
   if (shader == _shaders.end()) {
-    str s;
-    error(s + "Shader '" + handle + "' doesn't exist");
+    error("Shader '" + handle + "' doesn't exist");
   }
   return &shader->second;
 }
