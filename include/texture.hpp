@@ -13,12 +13,9 @@ class Texture {
   i32 width, height;
 
   void bind();
-
-  // private:
-  //  u32 texture_format_;
 };
 
-// Note: still contains the overhead associated with texture switching.
+// NOTE: still contains the overhead associated with texture switching.
 class TextureMap {
  public:
   std::vector<Texture> textures;
@@ -27,8 +24,12 @@ class TextureMap {
 
 namespace Textures {
 
+// Create a new texture with the given parameters.
 Texture *create(
     str handle, str file_path, bool transparent = false, i32 filter = GL_LINEAR
 );
 
-}
+// Remove a previously-defined texture.
+void remove(str handle);
+
+}  // namespace Textures

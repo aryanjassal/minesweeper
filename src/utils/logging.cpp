@@ -1,22 +1,42 @@
 #include "utils/logging.hpp"
 
 #include <iostream>
-#include <stdexcept>
 
 #include "glad/glad.h"
 
+u8 loglevel = LOGGER_DEBUG;
+
 void print(str prefix, str msg, bool fail = false) {
-  if (fail) {
-    // NOTE: runtime error or exit with print (for consistency)?
-    throw std::runtime_error(msg);
-  } else {
-    std::cout << prefix << " " << msg << std::endl;
-  }
+  std::cout << prefix << " " << msg << std::endl;
+  if (fail) exit(0);
 }
 
-void info(str msg, bool fail) { print("\033[1;33m INFO \033[0m", msg, fail); }
-void warn(str msg, bool fail) { print("\033[1;32m WARN \033[0m", msg, fail); }
-void error(str msg, bool fail) { print("\033[1;31m ERR \033[0m", msg, fail); }
+void set_loglevel(u32 level) { loglevel = level; }
+
+void debug(str msg) {
+  if (loglevel < LOGGER_DEBUG) return;
+  print("\033[1;90m DEBUG \033[0m", msg, false);
+}
+
+void info(str msg) {
+  if (loglevel < LOGGER_INFO) return;
+  print("\033[1;36m INFO  \033[0m", msg, false);
+}
+
+void warn(str msg, bool fail) {
+  if (loglevel < LOGGER_WARN) return;
+  print("\033[1;33m WARN  \033[0m", msg, fail);
+}
+
+void error(str msg, bool fail) {
+  if (loglevel < LOGGER_ERROR) return;
+  print("\033[1;31m ERROR \033[0m", msg, fail);
+}
+
+void fatal(str msg) {
+  if (loglevel < LOGGER_FATAL) return;
+  print("\033[101;30m FATAL \033[0m", msg, true);
+}
 
 void gl_geterror() {
   u32 err = glGetError();
@@ -42,7 +62,7 @@ void gl_geterror() {
         errstr = "UNKNOWN_ERROR";
         break;
     }
-    std::cout << "GLerror: " << errstr << " (" << err << ")" << std::endl;
+    std::cout << "GL_ERR: " << errstr << " (" << err << ")" << std::endl;
     exit(err);
   }
 }

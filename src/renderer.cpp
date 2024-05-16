@@ -24,10 +24,13 @@ std::map<str, Renderer> all_renderers = std::map<str, Renderer>();
 Renderer *Renderers::create(str handle, Shader &shader) {
   // Create a new renderer object and get a persistent pointer to it.
   Renderer rend;
-  rend.shader = shader;
-  rend.handle = handle;
   all_renderers[handle] = rend;
   Renderer *renderer = &all_renderers[handle];
+
+  // Set variables on the renderer object, as otherwise, the renderer can
+  // falsely delete the actual renderer entry when its destroyed.
+  renderer->shader = shader;
+  renderer->handle = handle;
 
   glGenVertexArrays(1, &renderer->vao);
   glBindVertexArray(renderer->vao);
@@ -47,10 +50,25 @@ Renderer *Renderers::create(str handle, Shader &shader) {
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
 
+  debug("Created new renderer: " + handle);
   return renderer;
 };
 
-Renderer::~Renderer() { glDeleteBuffers(1, &vbo); }
+void Renderers::clear() {
+  for (auto& p_rend : all_renderers) {
+    // Delete the buffer and then delete the reference from the hashmap to ensure
+    // no dangling references and a clean removal of the renderer.
+    Renderer &rend = p_rend.second;
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glDeleteBuffers(1, &rend.vbo);
+    glBindVertexArray(0);
+    glDeleteVertexArrays(1, &rend.vao);
+    debug("Deleted renderer: " + rend.handle);
+  }
+
+  all_renderers.clear();
+  debug("Cleared all renderers");
+}
 
 void Renderer::activate() {
   active_renderer = this;
@@ -70,26 +88,27 @@ void Renderer::activate() {
 void Renderer::render(
     std::vector<vert> verts, Transform transform, Texture texture
 ) {
-#ifdef DEBUG
+  // Make sure to have an active camera, otherwise warn the user.
   if (active_camera == nullptr) {
     error("At least one camera must be active!");
   }
-#endif
 
+  // Create an empty 4x4 model matrix
   auto model = glm::mat4(1.0f);
 
-  // Translate
+  // Translate to the given position
   model = glm::translate(model, transform.position);
 
-  // Rotate around origin
+  // Rotate around origin to the given angle
   glm::vec3 origin_offset = glm::vec3(transform.origin * transform.scale, 0.0f);
   model = glm::translate(model, origin_offset);
   model = glm::rotate(model, glm::radians(transform.angle), ROTATION_AXIS);
   model = glm::translate(model, -origin_offset);
 
-  // Scale
+  // Scale to the given scale factor
   model = glm::scale(model, glm::vec3(transform.scale, 0.0f));
 
+  // Texture must be valid before trying to use it.
   if (texture.height && texture.width) {
     glActiveTexture(GL_TEXTURE0);
     texture.bind();
@@ -99,8 +118,7 @@ void Renderer::render(
   this->shader.set_mat4("projection", active_camera->projection);
   this->shader.set_mat4("view", active_camera->view);
 
-  // TODO(aryanj): do the vertices change position? if not, then no need to
-  // update them.
+  // TODO: do the vertices change position? if not, then no need to update them.
   glBufferData(
       GL_ARRAY_BUFFER, sizeof(vert) * verts.size(), &verts[0], GL_DYNAMIC_DRAW
   );

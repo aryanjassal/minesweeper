@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "utils/logging.hpp"
 #include "window.hpp"
 
 std::map<u16, key> keys = std::map<u16, key>();
@@ -34,7 +35,10 @@ void callback(GLFWwindow *win, int _key, int code, int act, int mods) {
   }
 }
 
-void kb::init() { glfwSetKeyCallback(window, callback); }
+void kb::init() { 
+  glfwSetKeyCallback(window, callback); 
+  debug("Installed keyboard callback");
+}
 
 void kb::refresh() {
   for (auto &k : keys) {

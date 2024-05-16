@@ -12,6 +12,8 @@
 class Camera {
  public:
   f32 near, far;
+  str handle;
+
   glm::mat4 projection;
   glm::mat4 view = glm::mat4(1.0f);
 

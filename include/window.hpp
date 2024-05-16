@@ -16,4 +16,7 @@ void init(str title, glm::vec2 dimensions);
 // Change the title of the window.
 void title(str title);
 
+// Destroy the created window and uninitialise GLFW.
+void destroy();
+
 }  // namespace win

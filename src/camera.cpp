@@ -1,7 +1,6 @@
 #include "camera.hpp"
 
 #include <map>
-#include <stdexcept>
 
 #include "glm/gtc/matrix_transform.hpp"  // IWYU pragma: keep
 #include "utils/logging.hpp"
@@ -20,8 +19,8 @@ void Camera::activate() { active_camera = this; }
 Camera *Cameras::create_ortho(
     str handle, u32 width, u32 height, f32 near, f32 far, u8 origin
 ) {
-  // NOTE: include the handle inside the camera class too???
   Camera cam;
+  cam.handle = handle;
   cam.width = width;
   cam.height = height;
   cam.near = near;
@@ -53,11 +52,13 @@ Camera *Cameras::create_ortho(
       break;
     }
     default: {
-      throw std::runtime_error("Invalid camera origin for " + handle);
+      error("Invalid camera origin for " + handle);
     }
   }
 
+  // Save the camera in a hashmap
   all_cameras[handle] = cam;
+  debug("Created new orthographic camera: " + handle);
   return &all_cameras[handle];
 }
 
@@ -72,8 +73,7 @@ Camera *Cameras::create_ortho(
 // Get a camera using its handle
 Camera *Cameras::get(str handle) {
   if (all_cameras.find(handle) == all_cameras.end()) {
-    str s;
-    error(s + "Camera '" + handle + "'not found.");
+    error("Camera '" + handle + "' not found.");
   }
   return &all_cameras[handle];
 }

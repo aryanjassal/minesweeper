@@ -13,6 +13,7 @@
 #include "renderer.hpp"
 #include "shaders.hpp"
 #include "texture.hpp"
+#include "utils/logging.hpp"
 #include "utils/sleep.hpp"
 #include "utils/time.hpp"
 #include "utils/timer.hpp"
@@ -72,7 +73,7 @@ int main() {
   win::init("Minesweeper", SCREEN_WIDTH, SCREEN_HEIGHT);
   kb::init();
 
-  // TODO get a shader wrapper class like how everything else is
+  // TODO: get a shader wrapper class like how everything else is
   auto shader = Shader("passthrough");
   shader.compile();
 
@@ -128,5 +129,8 @@ int main() {
     }
   }
 
+  debug("Closing application...");
+  Renderers::clear();
+  win::destroy();
   return 0;
 }

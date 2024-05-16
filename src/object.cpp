@@ -1,6 +1,7 @@
 #include "object.hpp"
 
 #include "renderer.hpp"
+#include "utils/logging.hpp"
 
 // Vector to store all the created objects
 std::vector<Object> all_objects = std::vector<Object>();
@@ -18,6 +19,7 @@ Object *Objects::create(
   obj.texture = texture;
   all_objects.push_back(obj);
 
+  debug("Created new object: " + handle);
   return &all_objects[obj.id];
 }
 

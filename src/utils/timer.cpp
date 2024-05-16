@@ -13,8 +13,7 @@ std::map<str, Timer> all_timers = std::map<str, Timer>();
 Timer *Timers::create(str handle, f64 threshold_ms) {
   // Check if a timer with the handle already exists.
   if (all_timers.find(handle) != all_timers.end()) {
-    str s;
-    error(s + "A timer with the handle '" + handle + "' already exists!");
+    error("A timer with the handle '" + handle + "' already exists!");
   }
 
   // Initialise a new timer object.
@@ -31,9 +30,7 @@ Timer *Timers::create(str handle, f64 threshold_ms) {
 // Get a timer from the hashmap
 Timer *Timers::get(str handle) {
   if (all_timers.find(handle) == all_timers.end()) {
-    str s;
-    warn(s + "Timer '" + handle + "' not found.");
-    return new Timer();
+    error("Timer '" + handle + "' not found.");
   }
 
   return &all_timers[handle];

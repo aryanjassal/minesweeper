@@ -17,8 +17,7 @@ Texture *Textures::create(
     str handle, str file_path, bool transparent, i32 filter
 ) {
   if (all_textures.find(handle) != all_textures.end()) {
-    str s;
-    error(s + "A texture with handle '" + handle + "' already exists.");
+    error("A texture with handle '" + handle + "' already exists.");
   }
 
   i32 image_channels = transparent ? GL_RGBA : GL_RGB;
@@ -27,19 +26,18 @@ Texture *Textures::create(
   texture.handle = handle;
   glGenTextures(1, &texture.id);
 
-  // Discarding the value of the number of channels
+  // Make sure the image is loaded in the correct orientation.
+  stbi_set_flip_vertically_on_load(true);
+
+  // Load the image while discarding the number of channels in the image.
   u8 *data =
       stbi_load(file_path.c_str(), &texture.width, &texture.height, nullptr, 4);
 
   // Check if the image failed to load
   if (!data) {
-    str e;
-    e = e + "Failed to load image '" + file_path + "'\n";
+    str e = "Failed to load image '" + file_path + "'\n";
     cstr reason = stbi_failure_reason();
-    if (reason) {
-      e += reason;
-    }
-    error(e);
+    error(e + (reason ? reason : ""));
   }
 
   // Generate the texture
@@ -66,9 +64,18 @@ Texture *Textures::create(
 
   // Save the texture in the texture hashmap
   all_textures[handle] = texture;
+  debug("Created new texture: " + handle);
   return &all_textures[handle];
 }
 
-// void Texture::remove(cstr handle) {
-//
-// }
+void Textures::remove(str handle) {
+  // Confirm that the texture exists in the hashmap
+  if (all_textures.find(handle) == all_textures.end()) return;
+
+  // Delete the buffer and then delete the reference from the hashmap to ensure
+  // no dangling references and a clean removal of the texture.
+  glDeleteTextures(1, &all_textures[handle].id);
+  all_textures.erase(handle);
+
+  debug("Deleted texture: " + handle);
+}

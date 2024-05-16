@@ -5,7 +5,7 @@
 
 #include "utils/types.hpp"
 
-// TODO optimise this
+// TODO: optimise this
 void smart_sleep(f64 time, f64 margin) {
   const auto t1 = std::chrono::high_resolution_clock::now();
   const auto sleep_time = std::chrono::duration<f64>(time - margin);

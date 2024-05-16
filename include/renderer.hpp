@@ -18,7 +18,6 @@ class Renderer {
   str handle;
 
   Renderer() = default;
-  ~Renderer();
 
   // Sets the instance as the active renderer
   void activate();
@@ -38,7 +37,11 @@ class Renderer {
 
 namespace Renderers {
 
+// Create a new renderer
 Renderer *create(str handle, Shader &shader);
+
+// Delete all renderers.
+void clear();
 
 }
 

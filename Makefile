@@ -57,7 +57,7 @@ export
 dev: compile run
 
 # Fetch the dependencies for the program
-fetch: check_packages install_deps
+deps: check_packages install_deps
 
 # Compile the entire program
 all: fetch compile run

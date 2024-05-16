@@ -12,7 +12,7 @@ git clone https://github.com/Dav1dde/glad.git $EXT_DIR/glad-setup --quiet > /dev
 # generate glad
 echo "Generating glad..."
 cd $EXT_DIR/glad-setup
-git checkout master > /dev/null
+git checkout master --quiet > /dev/null
 python -m glad --profile="core" --api="gl=3.3" --generator="c" --out-path="." --quiet
 cd ../..
 

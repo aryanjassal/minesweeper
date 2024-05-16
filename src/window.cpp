@@ -1,5 +1,6 @@
 // clang-format off
 #include "glad/glad.h"
+#include "utils/logging.hpp"
 #include <GLFW/glfw3.h>
 // clang-format on
 
@@ -22,7 +23,7 @@ void win::init(str title, u32 width, u32 height) {
 
   window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
   if (window == nullptr) {
-    throw std::runtime_error("Game window failed to initialise.");
+    fatal("Game window failed to initialise.");
   }
 
   glfwMakeContextCurrent(window);
@@ -36,10 +37,21 @@ void win::init(str title, u32 width, u32 height) {
 
   // Configure enabled OpenGL features
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  
+  debug("Created new window: " + title);
 }
 
 void win::init(str title, glm::vec2 dimensions) {
   win::init(title, dimensions.x, dimensions.y);
 }
 
-void win::title(str title) { glfwSetWindowTitle(window, title.c_str()); }
+void win::title(str title) { 
+  glfwSetWindowTitle(window, title.c_str()); 
+  info("Setting window title to: " + title);
+}
+
+void win::destroy() {
+  glfwMakeContextCurrent(nullptr);
+  glfwDestroyWindow(window);
+  glfwTerminate();
+}

@@ -50,9 +50,10 @@ Shader::Shader(str handle, str _vert, str _frag, str _geom) {
   // }
 
   // // This fancy method is needed to insert a new value into the hashmap
-  // without
-  // // requiring an empty constructor
+  // // without requiring an empty constructor
   // _shaders.insert(std::map<cstr, Shader>::value_type(this->handle, *this));
+  
+  debug("Created shader: " + handle);
 }
 
 void Shader::compile() {
@@ -84,6 +85,7 @@ void Shader::compile() {
   // glAttachShader(this->id, gs);
   glLinkProgram(this->id);
   log_errors(this->id, SHADER_PROG);
+  debug("Compiled shader: " + this->handle);
 
   // Delete the shaders as they have already been linked to the shader
   glDeleteShader(vs);
