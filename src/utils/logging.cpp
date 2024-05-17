@@ -35,7 +35,7 @@ void error(str msg, bool fail) {
 
 void fatal(str msg) {
   if (loglevel < LOGGER_FATAL) return;
-  print("\033[101;30m FATAL \033[0m", msg, true);
+  print("\033[1;31m FATAL \033[0m", msg, true);
 }
 
 void gl_geterror() {

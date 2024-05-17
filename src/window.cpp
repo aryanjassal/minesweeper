@@ -12,7 +12,7 @@ GLFWwindow* window = nullptr;
 
 void win::init(str title, u32 width, u32 height) {
   if (!glfwInit()) {
-    throw std::runtime_error("GLFW failed to initialise.");
+    fatal("GLFW failed to initialise");
   }
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
