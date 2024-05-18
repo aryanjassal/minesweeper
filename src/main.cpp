@@ -3,7 +3,6 @@
 #include <GLFW/glfw3.h>
 // clang-format on
 
-#include <chrono>
 #include <cmath>
 #include <string>
 
@@ -69,8 +68,6 @@ void update() {
 }
 
 int main() {
-  Logging::set_loglevel(LOGGING_INFO);
-
   win::init("Minesweeper", SCREEN_WIDTH, SCREEN_HEIGHT);
   kb::init();
 
@@ -86,46 +83,39 @@ int main() {
   );
   cam.activate();
 
+  // Create a square object with the `cellmine` texture and scale it to make it
+  // 100x100 pixels large.
   auto &mine = Textures::create("one", "assets/cellmine.png");
   auto &sq = Objects::create("square", SQUARE_VERTICES, mine);
   sq.transform = Transform(glm::vec3(0.0f), glm::vec2(100.0f));
 
-  // Define the `delta_start`, `delta_end`, and `update_end` timestamps. The
-  // delta time is the actual time between frames, and the update time is used
-  // to calculate the sleep time for each frame to not exceed a set framerate.
-  std::chrono::high_resolution_clock::time_point d_start, d_end, u_end;
-
   // This is the main event loop. This loop runs the `render()` and `update()`
-  // method in that order.
-  // TODO: add some sort of a ticked update too, like `FixedUpdate()` in Unity
+  // method in that order. Also defines the `delta_start`, `delta_end`, and
+  // `update_end` timestamps to calculate frame times later.
+  Time::time_point d_start, d_end, u_end;
   while (!glfwWindowShouldClose(window) && !keys[GLFW_KEY_ESCAPE]) {
     // Calculate the delta time. Note that `.count()` returns the value to the
     // nearest integer, so the division is required to get more accuracy. This
-    // converts it from nanoseconds to milliseconds, with a ratio of 1000000:1
+    // converts it from microseconds to milliseconds, with a ratio of 1000:1
     Time::delta =
-        std::chrono::duration_cast<std::chrono::nanoseconds>(d_end - d_start)
-            .count() /
-        1000000.0f;
+        Time::duration_cast<Time::microseconds>(d_end - d_start).count() /
+        1000.0f;
 
-    d_start = std::chrono::high_resolution_clock::now();
+    d_start = Time::now();
     render();
     update();
 
-    // Use smart sleep to update exactly n times a second, where n is the
-    // desired fps of the game.
-    u_end = std::chrono::high_resolution_clock::now();
-    f64 sleep_time = (1.0f / MAX_FPS) -
-                     (std::chrono::duration<f64>(u_end - d_start).count());
+    // Use smart sleep to ensure a consistent fps.
+    u_end = Time::now();
+    f64 sleep_time =
+        (1.0f / MAX_FPS) - Time::duration<f64>(u_end - d_start).count();
+    smart_sleep(sleep_time, 0.0005f);
 
-    if (sleep_time > 0.0f) smart_sleep(sleep_time, 0.0005f);
+    d_end = Time::now();
 
-    d_end = std::chrono::high_resolution_clock::now();
-
-    if (Timers::get("fps")) {
-      f64 frame_time = Time::delta / 1000.0f;
-      u32 fps = std::ceil(1.0f / frame_time);
-      win::title("fps: " + std::to_string(fps));
+    if (Timers::test("fps")) {
       Timers::reset("fps");
+      win::title("Minesweeper - fps: " + std::to_string(Time::calculate_fps()));
     }
   }
 

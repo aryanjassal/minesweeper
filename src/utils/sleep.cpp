@@ -7,6 +7,8 @@
 
 // TODO: optimise this
 void smart_sleep(f64 time, f64 margin) {
+  if (time <= 0) return;
+
   const auto t1 = std::chrono::high_resolution_clock::now();
   const auto sleep_time = std::chrono::duration<f64>(time - margin);
   std::this_thread::sleep_for(sleep_time);

@@ -24,7 +24,6 @@ Renderer &active_renderer = default_renderer;
 // Hashmap to store all the created renderers
 std::map<str, Renderer> all_renderers = std::map<str, Renderer>();
 
-
 Renderer &Renderers::create(str handle, Shader &shader, u8 mode) {
   if (all_renderers.find(handle) != all_renderers.end()) {
     warn("A renderer with handle '" + handle + "' already exists");
@@ -91,11 +90,11 @@ void Renderers::remove(str handle) {
 }
 
 void Renderers::clear() {
-  for (auto& p_rend : all_renderers) {
-    // Delete the buffer and then delete the reference from the hashmap to ensure
-    // no dangling references and a clean removal of the renderer. Note that
-    // Renderers::remove() is not used as it also removes the entry from the map,
-    // which will result in the iterator becoming invalid.
+  for (auto &p_rend : all_renderers) {
+    // Delete the buffer and then delete the reference from the hashmap to
+    // ensure no dangling references and a clean removal of the renderer. Note
+    // that Renderers::remove() is not used as it also removes the entry from
+    // the map, which will result in the iterator becoming invalid.
     Renderer &rend = p_rend.second;
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
