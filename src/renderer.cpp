@@ -21,7 +21,12 @@ Renderer *active_renderer = nullptr;
 // Hashmap to store all the created renderers
 std::map<str, Renderer> all_renderers = std::map<str, Renderer>();
 
-Renderer *Renderers::create(str handle, Shader &shader) {
+Renderer *Renderers::create(str handle, Shader &shader, u8 mode) {
+  if (all_renderers.find(handle) != all_renderers.end()) {
+    warn("A renderer with handle '" + handle + "' already exists");
+    return nullptr;
+  }
+
   // Create a new renderer object and get a persistent pointer to it.
   Renderer rend;
   all_renderers[handle] = rend;
@@ -38,8 +43,10 @@ Renderer *Renderers::create(str handle, Shader &shader) {
   glGenBuffers(1, &renderer->vbo);
   glBindBuffer(GL_ARRAY_BUFFER, renderer->vbo);
 
-  // // For wireframed drawing
-  // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  // For wireframed drawing
+  if (mode == RENDER_WIREFRAME) {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  }
 
   // Used `nullptr` here as it doesn't make a difference for the first entry
   glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(f32) * 5, nullptr);
@@ -54,16 +61,35 @@ Renderer *Renderers::create(str handle, Shader &shader) {
   return renderer;
 };
 
+void Renderers::remove(str handle) {
+  if (all_renderers.find(handle) == all_renderers.end()) return;
+
+  // Delete the buffer and then delete the reference from the hashmap to ensure
+  // no dangling references and a clean removal of the renderer.
+  Renderer &rend = all_renderers[handle];
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &rend.vbo);
+  glBindVertexArray(0);
+  glDeleteVertexArrays(1, &rend.vao);
+  all_renderers.erase(handle);
+
+  debug("Deallocated renderer: " + rend.handle);
+}
+
 void Renderers::clear() {
   for (auto& p_rend : all_renderers) {
     // Delete the buffer and then delete the reference from the hashmap to ensure
-    // no dangling references and a clean removal of the renderer.
+    // no dangling references and a clean removal of the renderer. Note that
+    // Renderers::remove() is not used as it also removes the entry from the map,
+    // which will result in the iterator becoming invalid.
     Renderer &rend = p_rend.second;
+
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glDeleteBuffers(1, &rend.vbo);
     glBindVertexArray(0);
     glDeleteVertexArrays(1, &rend.vao);
-    debug("Deleted renderer: " + rend.handle);
+    debug("Deallocated renderer: " + rend.handle);
   }
 
   all_renderers.clear();
@@ -83,6 +109,7 @@ void Renderer::activate() {
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
   glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
+  debug("Activated renderer: " + this->handle);
 }
 
 void Renderer::render(

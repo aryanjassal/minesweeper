@@ -11,7 +11,7 @@
 #include "utils/types.hpp"
 
 // Hashmap to store all created shaders
-std::map<str, Shader> _shaders = std::map<str, Shader>();
+std::map<str, Shader> all_shaders = std::map<str, Shader>();
 
 // Reads a file at the location `path` and returns the contents as a string
 str read_file(str path) {
@@ -42,12 +42,12 @@ Shader::Shader(str handle, str _vert, str _frag, str _geom) {
     this->frag = read_file("src/shaders/pass/pass.fs");
   }
 
-  // if (_geom) {
-  //   this->geom = read_file(_geom);
-  // } else {
-  //   // fallback geometry shader
-  //   this->geom = read_file("src/shaders/pass/pass.gs");
-  // }
+  if (!_geom.empty()) {
+    this->geom = read_file(_geom);
+  } else {
+    // fallback geometry shader
+    this->geom = read_file("src/shaders/pass/pass.gs");
+  }
 
   // // This fancy method is needed to insert a new value into the hashmap
   // // without requiring an empty constructor
@@ -71,12 +71,12 @@ void Shader::compile() {
   glCompileShader(fs);
   log_errors(fs, SHADER_FRAG);
 
-  // // Create the geometry shader
-  // cstr gcode = this->geom.c_str();
-  // u32 gs = glCreateShader(GL_GEOMETRY_SHADER);
-  // glShaderSource(gs, 1, &gcode, nullptr);
-  // glCompileShader(gs);
-  // log_errors(gs, SHADER_GEOM);
+  // Create the geometry shader
+  cstr gcode = this->geom.c_str();
+  u32 gs = glCreateShader(GL_GEOMETRY_SHADER);
+  glShaderSource(gs, 1, &gcode, nullptr);
+  glCompileShader(gs);
+  log_errors(gs, SHADER_GEOM);
 
   // Attach the shaders to the OpenGL program
   this->id = glCreateProgram();
@@ -90,10 +90,13 @@ void Shader::compile() {
   // Delete the shaders as they have already been linked to the shader
   glDeleteShader(vs);
   glDeleteShader(fs);
-  // glDeleteShader(gs);
+  glDeleteShader(gs);
 }
 
-void Shader::activate() { glUseProgram(this->id); }
+void Shader::activate() { 
+  glUseProgram(this->id); 
+  debug("Activated shader: " + this->handle);
+}
 
 void Shader::set_bool(cstr id, bool val) {
   glUniform1i(glGetUniformLocation(this->id, id), val ? 1 : 0);
@@ -175,9 +178,9 @@ void Shader::log_errors(u32 shader, i8 type) {
 }
 
 Shader *Shaders::get(str handle) {
-  auto shader = _shaders.find(handle);
-  if (shader == _shaders.end()) {
-    error("Shader '" + handle + "' doesn't exist");
+  if (all_shaders.find(handle) == all_shaders.end()) {
+    warn("Shader '" + handle + "' doesn't exist");
+    return nullptr;
   }
-  return &shader->second;
+  return &all_shaders[handle];
 }

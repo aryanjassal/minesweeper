@@ -8,6 +8,9 @@
 #include "utils/types.hpp"
 #include "vertex.hpp"
 
+#define RENDER_POLYGON 0
+#define RENDER_WIREFRAME 1
+
 class Renderer {
  public:
   // Shader object linked to this renderer. Multiple shaders for a single
@@ -38,11 +41,14 @@ class Renderer {
 namespace Renderers {
 
 // Create a new renderer
-Renderer *create(str handle, Shader &shader);
+Renderer *create(str handle, Shader &shader, u8 mode = RENDER_POLYGON);
+
+// Remove a renderer
+void remove(str handle);
 
 // Delete all renderers.
 void clear();
 
-}
+}  // namespace Renderers
 
 extern Renderer *active_renderer;

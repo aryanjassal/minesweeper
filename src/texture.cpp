@@ -17,7 +17,8 @@ Texture *Textures::create(
     str handle, str file_path, bool transparent, i32 filter
 ) {
   if (all_textures.find(handle) != all_textures.end()) {
-    error("A texture with handle '" + handle + "' already exists.");
+    warn("A texture with handle '" + handle + "' already exists");
+    return nullptr;
   }
 
   i32 image_channels = transparent ? GL_RGBA : GL_RGB;

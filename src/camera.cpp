@@ -13,12 +13,19 @@ Camera *active_camera = nullptr;
 std::map<str, Camera> all_cameras = std::map<str, Camera>();
 
 // Activate a camera
-void Camera::activate() { active_camera = this; }
+void Camera::activate() { 
+  active_camera = this; 
+  debug("Activated camera: " + this->handle);
+}
 
 // Create an orthographic camera.
 Camera *Cameras::create_ortho(
     str handle, u32 width, u32 height, f32 near, f32 far, u8 origin
 ) {
+  if (all_cameras.find(handle) != all_cameras.end()) {
+    warn("A camera with handle '" + handle + "' already exists");
+    return nullptr;
+  }
   Camera cam;
   cam.handle = handle;
   cam.width = width;

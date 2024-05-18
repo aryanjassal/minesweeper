@@ -6,8 +6,6 @@
 
 #include "window.hpp"
 
-#include <stdexcept>
-
 GLFWwindow* window = nullptr;
 
 void win::init(str title, u32 width, u32 height) {
@@ -38,7 +36,7 @@ void win::init(str title, u32 width, u32 height) {
   // Configure enabled OpenGL features
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   
-  debug("Created new window: " + title);
+  info("Created new window with title: " + title);
 }
 
 void win::init(str title, glm::vec2 dimensions) {
