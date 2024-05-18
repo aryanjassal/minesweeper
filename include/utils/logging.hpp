@@ -2,14 +2,13 @@
 
 #include "utils/types.hpp"
 
-#define LOGGER_NONE 0
-#define LOGGER_FATAL 1
-#define LOGGER_ERROR 2
-#define LOGGER_WARN 3
-#define LOGGER_INFO 4
-#define LOGGER_DEBUG 5
+#define LOGGING_NONE 0
+#define LOGGING_FATAL 1
+#define LOGGING_ERROR 2
+#define LOGGING_WARN 3
+#define LOGGING_INFO 4
+#define LOGGING_DEBUG 5
 
-void set_loglevel(u32 level);
 
 void debug(str msg);
 void info(str msg);
@@ -20,3 +19,10 @@ void fatal(str msg);
 // Checks if there was an error in OpenGL, and quits if there was.
 // TODO: actually make this good
 void gl_geterror();
+
+namespace Logging {
+
+// Set the logging level to output
+void set_loglevel(u32 level);
+
+}

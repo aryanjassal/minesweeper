@@ -29,10 +29,10 @@ class Timer {
 namespace Timers {
 
 // Create a new timer.
-Timer *create(str handle, f64 threshold_ms);
+Timer &create(str handle, f64 threshold_ms);
 
 // Get a timer using its handle.
-Timer *get(str handle);
+Timer &get(str handle);
 
 // Reset the timer with the given handle. Shorthand for
 // `Timers::get("handle")->reset()`
@@ -45,7 +45,15 @@ bool test(str handle);
 // Tick all the timers together.
 void tick(f64 time_ms);
 
-// Get a vector of all the timers created.
-std::vector<Timer *> all();
+// Get an immutable vector of all the timers created.
+std::vector<Timer> all();
 
 }  // namespace Timers
+
+
+namespace Time {
+
+// Stores the delta time, or the time passed since rendering the previous frame.
+extern f64 delta;
+
+}  // namespace Time

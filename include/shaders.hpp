@@ -18,16 +18,19 @@ class Shader {
   // User-friendly identifier for the shader
   str handle;
 
+  // Stores the shader code in their respective variables
+  str vert, frag, geom;
+
+  // Stores the shader configuration information
+  i32 layout_num = 0;
+  std::vector<i32> layout_size = std::vector<i32>();
+
+  // Logs any errors while compiling the shaders
+  void log_errors(u32 shader, i8 type);
+
   // Compiles the shader from the file locations, checking for errors and
   // finally making the shader usable.
   void compile();
-
-  // Creates a shader using the file locations of each file. Default parameter
-  // is `nullptr` which would result in a simple passthrough shader. Note that
-  // no compilation or error checking is done in this step. Before activating
-  // the shader, `compile()` must be called.
-  Shader(str handle, str vert = str(), str frag = str(), str geom = str());
-  Shader() = default;
 
   // Uses this shader for rendering. Note that this must be called to use the
   // shader for rendering.
@@ -44,21 +47,19 @@ class Shader {
   void set_vec4(cstr id, f32 x, f32 y, f32 z, f32 w);
   void set_vec4(cstr id, glm::vec4 val);
   void set_mat4(cstr id, const glm::mat4 &val);
-
- private:
-  // Stores the shader code in their respective variables
-  str vert, frag, geom;
-
-  // Stores the shader configuration information
-  i32 layout_num = 0;
-  std::vector<i32> layout_size = std::vector<i32>();
-
-  // Logs any errors while compiling the shaders
-  void log_errors(u32 shader, i8 type);
 };
 
 namespace Shaders {
 
-Shader *get(str handle);
+// Creates a shader using the file locations of each file. Default parameter
+// is `nullptr` which would result in a simple passthrough shader. Note that
+// no compilation or error checking is done in this step. Before activating
+// the shader, `compile()` must be called.
+Shader &create(
+    str handle, str vert = str(), str frag = str(), str geom = str()
+);
+
+// Fetch a shader using its handle. Returns nullptr if the shader doesn't exist.
+Shader &get(str handle);
 
 }  // namespace Shaders

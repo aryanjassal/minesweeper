@@ -13,6 +13,9 @@
 // Hashmap to store all created shaders
 std::map<str, Shader> all_shaders = std::map<str, Shader>();
 
+// Default shader
+Shader default_shader;
+
 // Reads a file at the location `path` and returns the contents as a string
 str read_file(str path) {
   std::ifstream f(path);
@@ -25,35 +28,39 @@ str read_file(str path) {
   return out.str();
 }
 
-Shader::Shader(str handle, str _vert, str _frag, str _geom) {
-  this->handle = handle;
+Shader &Shaders::create(str handle, str _vert, str _frag, str _geom) {
+  if (all_shaders.find(handle) != all_shaders.end()) {
+    warn("A shader with handle '" + handle + "' already exists");
+    return default_shader;
+  }
+
+  Shader shader;
+  shader.handle = handle;
 
   if (!_vert.empty()) {
-    this->vert = read_file(_vert);
+    shader.vert = read_file(_vert);
   } else {
     // fallback vertex shader
-    this->vert = read_file("src/shaders/pass/pass.vs");
+    shader.vert = read_file("src/shaders/pass/pass.vs");
   }
 
   if (!_frag.empty()) {
-    this->frag = read_file(_frag);
+    shader.frag = read_file(_frag);
   } else {
     // fallback fragment shader
-    this->frag = read_file("src/shaders/pass/pass.fs");
+    shader.frag = read_file("src/shaders/pass/pass.fs");
   }
 
   if (!_geom.empty()) {
-    this->geom = read_file(_geom);
+    shader.geom = read_file(_geom);
   } else {
     // fallback geometry shader
-    this->geom = read_file("src/shaders/pass/pass.gs");
+    shader.geom = read_file("src/shaders/pass/pass.gs");
   }
 
-  // // This fancy method is needed to insert a new value into the hashmap
-  // // without requiring an empty constructor
-  // _shaders.insert(std::map<cstr, Shader>::value_type(this->handle, *this));
-  
+  all_shaders[handle] = shader; 
   debug("Created shader: " + handle);
+  return all_shaders[handle];
 }
 
 void Shader::compile() {
@@ -177,10 +184,10 @@ void Shader::log_errors(u32 shader, i8 type) {
   }
 }
 
-Shader *Shaders::get(str handle) {
+Shader &Shaders::get(str handle) {
   if (all_shaders.find(handle) == all_shaders.end()) {
     warn("Shader '" + handle + "' doesn't exist");
-    return nullptr;
+    return default_shader;
   }
-  return &all_shaders[handle];
+  return all_shaders[handle];
 }

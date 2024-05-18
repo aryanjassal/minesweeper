@@ -15,8 +15,7 @@
 #include "texture.hpp"
 #include "utils/logging.hpp"
 #include "utils/sleep.hpp"
-#include "utils/time.hpp"
-#include "utils/timer.hpp"
+#include "utils/timing.hpp"
 #include "vertex.hpp"
 #include "window.hpp"
 
@@ -49,7 +48,7 @@ void render() {
   glClear(GL_COLOR_BUFFER_BIT);
 
   for (auto &obj : Objects::all()) {
-    obj->render();
+    obj.render();
   }
 
   glfwSwapInterval(0);
@@ -70,25 +69,26 @@ void update() {
 }
 
 int main() {
+  Logging::set_loglevel(LOGGING_INFO);
+
   win::init("Minesweeper", SCREEN_WIDTH, SCREEN_HEIGHT);
   kb::init();
 
-  // TODO: get a shader wrapper class like how everything else is
-  auto shader = Shader("passthrough");
+  auto &shader = Shaders::create("passthrough");
   shader.compile();
 
-  Renderer *renderer = Renderers::create("default", shader);
-  renderer->activate();
+  auto &renderer = Renderers::create("default", shader);
+  renderer.activate();
 
   // Create cameras, textures, and objects.
-  Camera *cam = Cameras::create_ortho(
+  auto &cam = Cameras::create_ortho(
       "main", SCREEN_WIDTH, SCREEN_HEIGHT, -100.0f, 100.0f, CAM_ORIGIN_TOP_LEFT
   );
-  cam->activate();
+  cam.activate();
 
-  auto mine = Textures::create("one", "assets/cellmine.png");
-  auto sq = Objects::create("square", SQUARE_VERTICES, *mine);
-  sq->transform = Transform(glm::vec3(0.0f), glm::vec2(100.0f));
+  auto &mine = Textures::create("one", "assets/cellmine.png");
+  auto &sq = Objects::create("square", SQUARE_VERTICES, mine);
+  sq.transform = Transform(glm::vec3(0.0f), glm::vec2(100.0f));
 
   // Define the `delta_start`, `delta_end`, and `update_end` timestamps. The
   // delta time is the actual time between frames, and the update time is used
@@ -121,7 +121,7 @@ int main() {
 
     d_end = std::chrono::high_resolution_clock::now();
 
-    if (*Timers::get("fps")) {
+    if (Timers::get("fps")) {
       f64 frame_time = Time::delta / 1000.0f;
       u32 fps = std::ceil(1.0f / frame_time);
       win::title("fps: " + std::to_string(fps));

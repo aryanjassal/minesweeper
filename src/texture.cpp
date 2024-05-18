@@ -6,19 +6,25 @@
 #include "stb/stb_image.h"
 #include "utils/logging.hpp"
 
+// Default texture
+Texture default_texture;
+
 // Hashmap to store all the created objects
 std::map<str, Texture> all_textures = std::map<str, Texture>();
 
 // Bind texture to "curent texture"
-void Texture::bind() { glBindTexture(GL_TEXTURE_2D, this->id); }
+void Texture::bind() { 
+  glBindTexture(GL_TEXTURE_2D, this->id); 
+  // debug("Activated texture: " + handle);
+}
 
 // Create a new texture
-Texture *Textures::create(
+Texture &Textures::create(
     str handle, str file_path, bool transparent, i32 filter
 ) {
   if (all_textures.find(handle) != all_textures.end()) {
     warn("A texture with handle '" + handle + "' already exists");
-    return nullptr;
+    return default_texture;
   }
 
   i32 image_channels = transparent ? GL_RGBA : GL_RGB;
@@ -54,7 +60,7 @@ Texture *Textures::create(
   stbi_image_free(data);
 
   // Set texture wrap and filter settings.
-  // NOTE: Through trial and error I have realised that this is critical.
+  // Through trial and error I have realised that this is critical.
   // Otherwise the code will not work.
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -66,7 +72,7 @@ Texture *Textures::create(
   // Save the texture in the texture hashmap
   all_textures[handle] = texture;
   debug("Created new texture: " + handle);
-  return &all_textures[handle];
+  return all_textures[handle];
 }
 
 void Textures::remove(str handle) {

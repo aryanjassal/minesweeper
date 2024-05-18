@@ -25,7 +25,7 @@ class TextureMap {
 namespace Textures {
 
 // Create a new texture with the given parameters.
-Texture *create(
+Texture &create(
     str handle, str file_path, bool transparent = false, i32 filter = GL_LINEAR
 );
 

@@ -1,4 +1,4 @@
-#include "utils/timer.hpp"
+#include "utils/timing.hpp"
 
 #include <map>
 #include <vector>
@@ -6,11 +6,17 @@
 #include "utils/logging.hpp"
 #include "utils/types.hpp"
 
+// Set a default value for Time::delta
+f64 Time::delta = 0.0f;
+
+// Default timer
+Timer default_timer;
+
 // Hashmap of all timer objects
 std::map<str, Timer> all_timers = std::map<str, Timer>();
 
 // Create a new timer
-Timer *Timers::create(str handle, f64 threshold_ms) {
+Timer &Timers::create(str handle, f64 threshold_ms) {
   // Check if a timer with the handle already exists.
   if (all_timers.find(handle) != all_timers.end()) {
     error("A timer with the handle '" + handle + "' already exists!");
@@ -24,23 +30,24 @@ Timer *Timers::create(str handle, f64 threshold_ms) {
 
   // Return a persistent reference.
   all_timers[handle] = timer;
-  return &all_timers[handle];
+  return all_timers[handle];
 }
 
 // Get a timer from the hashmap
-Timer *Timers::get(str handle) {
+Timer &Timers::get(str handle) {
   if (all_timers.find(handle) == all_timers.end()) {
-    error("Timer '" + handle + "' not found.");
+    warn("Timer '" + handle + "' not found.");
+    return default_timer;
   }
 
-  return &all_timers[handle];
+  return all_timers[handle];
 }
 
 // Reset a given timer using the shorthand
-void Timers::reset(str handle) { Timers::get(handle)->reset(); }
+void Timers::reset(str handle) { Timers::get(handle).reset(); }
 
 // Test a given timer using the shorthand
-bool Timers::test(str handle) { return Timers::get(handle)->test(); }
+bool Timers::test(str handle) { return Timers::get(handle).test(); }
 
 // Tick all the timers
 void Timers::tick(f64 time_ms) {
@@ -50,10 +57,10 @@ void Timers::tick(f64 time_ms) {
 }
 
 // Get a vector of all the timers created
-std::vector<Timer *> Timers::all() {
-  std::vector<Timer *> out;
-  for (auto &pair : all_timers) {
-    out.push_back(&pair.second);
+std::vector<Timer> Timers::all() {
+  std::vector<Timer> out;
+  for (auto pair : all_timers) {
+    out.push_back(pair.second);
   }
   return out;
 }

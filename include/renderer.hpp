@@ -20,8 +20,6 @@ class Renderer {
   // Store the handle of the renderer for easier debugging.
   str handle;
 
-  Renderer() = default;
-
   // Sets the instance as the active renderer
   void activate();
 
@@ -41,7 +39,10 @@ class Renderer {
 namespace Renderers {
 
 // Create a new renderer
-Renderer *create(str handle, Shader &shader, u8 mode = RENDER_POLYGON);
+Renderer &create(str handle, Shader &shader, u8 mode = RENDER_POLYGON);
+
+// Get a renderer
+Renderer &get(str handle);
 
 // Remove a renderer
 void remove(str handle);
@@ -51,4 +52,4 @@ void clear();
 
 }  // namespace Renderers
 
-extern Renderer *active_renderer;
+extern Renderer &active_renderer;

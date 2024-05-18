@@ -33,20 +33,20 @@ class Camera {
 namespace Cameras {
 
 // Create a new orthographic camera.
-Camera *create_ortho(
+Camera &create_ortho(
     str handle, u32 width, u32 height, f32 near, f32 far,
     u8 origin = CAM_ORIGIN_BOTTOM_LEFT
 );
-Camera *create_ortho(
+Camera &create_ortho(
     str handle, glm::uvec2 dimensions, f32 near, f32 far,
     u8 origin = CAM_ORIGIN_BOTTOM_LEFT
 );
 
 // Get a camera using its handle.
-Camera *get(str handle);
+Camera &get(str handle);
 
 }  // namespace Cameras
 
 // Store the active camera whose projection and view matrices will be used for
 // offsetting objects.
-extern Camera *active_camera;
+extern Camera &active_camera;

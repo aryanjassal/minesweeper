@@ -22,10 +22,11 @@ class Object {
 namespace Objects {
 
 // Create a new object with the given parameters.
-Object *create(str handle, std::vector<vert> vertices,
-               Texture texture = Texture());
+Object &create(
+    str handle, std::vector<vert> vertices, Texture texture = Texture()
+);
 
-// Return a vector of all active objects.
-std::vector<Object *> all();
+// Return an immutable vector of all active objects.
+std::vector<Object> all();
 
 }  // namespace Objects
