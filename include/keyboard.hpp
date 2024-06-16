@@ -4,7 +4,8 @@
 
 #include "utils/types.hpp"
 
-using key = struct skey_t {
+// Register a key object which contains all the relevant data of a single key.
+using kbkey_t = struct skey_t {
   bool pressed, down, released;
   bool shift, ctrl, alt, super, caps, num;
 
@@ -16,17 +17,14 @@ namespace kb {
 // Register the keyboard input handler with the currently active window
 void init();
 
-// Remove keys which are no longer being pressed by the user, potentially saving
-// memory
-void clean();
-
-// Reset the `pressed` and `released` attributes as they should only be set for
+// Removes the keys which are no longer being pressed by the user, potentially saving
+// memory, and resets the `pressed` and `released` attributes as they should only be set for
 // the duration of one update tick.
-void refresh();
-
-// Does the role of both `kb::refresh()` and `kb::clean()` (in that order)
 void update();
+
+// Resets the state to the default state.
+void reset();
 
 }  // namespace kb
 
-extern std::map<u16, key> keys;
+extern std::map<u16, kbkey_t> keys;

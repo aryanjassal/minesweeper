@@ -1,5 +1,5 @@
 # Set dependencies for compiling and running the application
-PKGS := glfw3 wayland-client wayland-cursor
+PKGS := glfw3
 LIBS := glad=deps/glad.sh glm=deps/glm.sh stb=deps/stb.sh
 
 # Should we use wayland or not?

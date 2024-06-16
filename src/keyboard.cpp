@@ -5,9 +5,9 @@
 #include "utils/logging.hpp"
 #include "window.hpp"
 
-std::map<u16, key> keys = std::map<u16, key>();
+std::map<u16, kbkey_t> keys = std::map<u16, kbkey_t>();
 
-void domod(key *k, i8 mods) {
+void inline domod(kbkey_t *k, i8 mods) {
   k->shift = (mods & 1);
   k->ctrl = (mods & 1 << 1);
   k->alt = (mods & 1 << 2);
@@ -16,8 +16,10 @@ void domod(key *k, i8 mods) {
   k->num = (mods & 1 << 5);
 }
 
-void callback(GLFWwindow *win, int _key, int code, int act, int mods) {
-  key k = {};
+// NOTE: all the types need to be i32 as that is what the callback function
+// expects.
+void callback(GLFWwindow *win, i32 _key, i32 code, i32 act, i32 mods) {
+  kbkey_t k = {};
   domod(&k, mods);
 
   if (_key < 0) return;
@@ -35,32 +37,26 @@ void callback(GLFWwindow *win, int _key, int code, int act, int mods) {
   }
 }
 
-void kb::init() { 
-  glfwSetKeyCallback(window, callback); 
+void kb::init() {
+  glfwSetKeyCallback(window, callback);
   debug("Installed keyboard callback");
 }
 
-void kb::refresh() {
+void kb::update() {
+  std::vector<u16> rkeys;
   for (auto &k : keys) {
     k.second.pressed = false;
     k.second.released = false;
   }
-}
 
-void kb::clean() {
-  std::vector<u16> rkeys;
+  for (const auto k : rkeys) {
+    keys.erase(keys.find(k));
+  }
+
   for (const auto k : keys) {
     if (!k.second.pressed && !k.second.down && !k.second.released) {
       rkeys.push_back(k.first);
     }
   }
 
-  for (const auto k : rkeys) {
-    keys.erase(keys.find(k));
-  }
-}
-
-void kb::update() {
-  kb::refresh();
-  kb::clean();
 }

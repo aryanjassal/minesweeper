@@ -61,7 +61,7 @@ using time_point = std::chrono::high_resolution_clock::time_point;
 
 // Return the current time using chrono's high resolution clock. Equivalent to
 // `std::chrono::high_resolution_clock::now()`
-std::chrono::high_resolution_clock::time_point now() {
+inline std::chrono::high_resolution_clock::time_point now() {
   return std::chrono::high_resolution_clock::now();
 }
 
@@ -72,6 +72,6 @@ extern f64 delta;
 // delta_time by 1000, to convert it from milliseconds to seconds. Then, inverse
 // the result to give the fps. This has been done in one calculation as it is
 // simpler to read.
-u32 calculate_fps() { return std::round(1000.0f / Time::delta); }
+inline u32 calculate_fps() { return std::round(1000.0f / Time::delta); }
 
 }  // namespace Time

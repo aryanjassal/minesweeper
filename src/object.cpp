@@ -1,7 +1,11 @@
 #include "object.hpp"
+#include <algorithm>
 
 #include "renderer.hpp"
 #include "utils/logging.hpp"
+
+// Default object
+Object default_object;
 
 // Vector to store all the created objects
 std::vector<Object> all_objects = std::vector<Object>();
@@ -12,6 +16,14 @@ u32 next_id = 0;
 Object &Objects::create(
     str handle, std::vector<vert> vertices, Texture texture
 ) {
+  auto it = std::find_if(all_objects.begin(), all_objects.end(), [&](const auto &obj) {
+    return obj.handle == handle;
+  });
+  if (it != all_objects.end()) {
+    warn("An object with handle '" + handle + "' already exists");
+    return default_object;
+  }
+
   Object obj;
   obj.handle = handle;
   obj.vertices = vertices;
