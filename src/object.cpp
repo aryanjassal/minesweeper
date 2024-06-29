@@ -5,27 +5,15 @@
 #include "renderer.hpp"
 #include "utils/logging.hpp"
 
-// Default object
-Object default_object;
-
 // Vector to store all the created objects
 std::vector<Object> all_objects = std::vector<Object>();
 
 // Keep track of the next id for an instantiated object
 u32 next_id = 0;
 
-Object &Objects::create(
+Object *object_manager::create(
     str handle, std::vector<vert> vertices, Texture texture, Transform transform
 ) {
-  auto it = std::find_if(
-      all_objects.begin(), all_objects.end(),
-      [&](const auto &obj) { return obj.handle == handle; }
-  );
-  if (it != all_objects.end()) {
-    warn("An object with handle '" + handle + "' already exists");
-    return default_object;
-  }
-
   Object obj;
   obj.handle = handle;
   obj.vertices = vertices;
@@ -35,17 +23,79 @@ Object &Objects::create(
   all_objects.push_back(obj);
 
   debug("Created new object: " + handle);
-  return all_objects[obj.id];
+  return &all_objects[obj.id];
 }
 
-std::vector<Object> Objects::all() {
-  std::vector<Object> out;
-  // Need this loop to convert vector of objects into a vector pointing back to
-  // the original data container. Note this is SUPER TEMP
-  for (auto obj : all_objects) {
-    out.push_back(obj);
+std::vector<Object *> object_manager::all() {
+  std::vector<Object *> out;
+  for (auto &obj : all_objects) {
+    if (obj.active) out.push_back(&obj);
   }
   return out;
+}
+
+std::vector<Object *> object_manager::find(str handle) {
+  std::vector<Object *> out;
+  for (auto &obj : all_objects) {
+    if (obj.handle == handle) out.push_back(&obj);
+  }
+  return out;
+}
+
+Object *object_manager::get(u32 id) { return &all_objects[id]; }
+
+Object *object_manager::get(str handle) {
+  for (auto &obj : all_objects) {
+    if (obj.handle == handle) return &obj;
+  }
+  return nullptr;
+}
+
+bool object_manager::destroy(u32 id) {
+  // Create an iterator which would only contain objects whose ID is
+  // similar to the argument.
+  auto it = std::find_if(
+      all_objects.begin(), all_objects.end(),
+      [&](const Object &obj) { return obj.id == id; }
+  );
+
+  // If the object exists in the array, then erase it. Otherwise, return
+  // `false`, signifying something went wrong.
+  if (it != all_objects.end()) {
+    all_objects.erase(it);
+    return true;
+  }
+  return false;
+}
+
+bool object_manager::destroy(Object *object) {
+  // Create an iterator which would only contain objects whose signature is
+  // similar to the argument.
+  auto it = std::find_if(
+      all_objects.begin(), all_objects.end(),
+      [&](const Object &obj) { return &obj == object; }
+  );
+
+  // If the object exists in the array, then erase it. Otherwise, return
+  // `false`, signifying something went wrong.
+  if (it != all_objects.end()) {
+    all_objects.erase(it);
+    return true;
+  }
+  return false;
+}
+
+bool object_manager::destroy(const std::vector<Object *> &objects) {
+  bool destroyed_any = false;
+  for (auto obj : objects) {
+    destroyed_any = object_manager::destroy(obj) || destroyed_any;
+  }
+  return destroyed_any;
+}
+
+void object_manager::clear() {
+  all_objects.clear();
+  debug("Cleared all tracked objects");
 }
 
 void Object::render() {

@@ -9,7 +9,7 @@
 #include "glm/gtc/matrix_transform.hpp"  // IWYU pragma: keep
 #include "shaders.hpp"
 #include "texture.hpp"
-#include "utils/logging.hpp"  // IWYU pragma: keep
+#include "utils/logging.hpp"
 #include "utils/types.hpp"
 #include "vertex.hpp"
 
@@ -129,7 +129,7 @@ void Renderer::render(
 ) {
   // Make sure to have an active camera, otherwise warn the user.
   if (active_camera.handle.empty()) {
-    warn("At least one camera must be active to perform rendering");
+    error("At least one camera must be active to perform rendering");
   }
 
   // Create an empty 4x4 model matrix

@@ -1,24 +1,25 @@
 #include "utils/sleep.hpp"
 
+#include <atomic>
 #include <chrono>
 #include <thread>
 
 #include "utils/types.hpp"
 
-// TODO: optimise this
-void smart_sleep(f64 time, f64 margin) {
+void smart_sleep(f64 time) {
   if (time <= 0) return;
 
-  const auto t1 = std::chrono::high_resolution_clock::now();
-  const auto sleep_time = std::chrono::duration<f64>(time - margin);
-  std::this_thread::sleep_for(sleep_time);
+  const auto start = std::chrono::steady_clock::now();
+  const auto end = start + std::chrono::duration<f64>(time);
 
-  const auto t2 = std::chrono::high_resolution_clock::now();
-  const std::chrono::duration<f64> elapsed = t2 - t1;
+  // Sleep for 95% of the duration
+  std::this_thread::sleep_for(std::chrono::duration<f64>(time * 0.95));
 
-  const auto t3 = std::chrono::high_resolution_clock::now();
-  for (auto t = std::chrono::high_resolution_clock::now();
-       std::chrono::duration<f64>(t - t3).count() < (time - elapsed.count());
-       t = std::chrono::high_resolution_clock::now()) {
+  // Spin-wait for the remaining time
+  std::atomic_flag spin_lock = ATOMIC_FLAG_INIT;
+  spin_lock.test_and_set(std::memory_order_acquire);
+  while (std::chrono::steady_clock::now() < end) {
+    spin_lock.clear(std::memory_order_release);
+    spin_lock.test_and_set(std::memory_order_acquire);
   }
 }

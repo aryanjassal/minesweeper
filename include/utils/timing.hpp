@@ -72,6 +72,8 @@ extern f64 delta;
 // delta_time by 1000, to convert it from milliseconds to seconds. Then, inverse
 // the result to give the fps. This has been done in one calculation as it is
 // simpler to read.
-inline u32 calculate_fps() { return std::round(1000.0f / timing::delta); }
+inline u32 calculate_fps(f64 frame_time) {
+  return std::round(1000.0f / frame_time);
+}
 
 }  // namespace timing

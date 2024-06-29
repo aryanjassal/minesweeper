@@ -55,9 +55,9 @@ void btn_callback(GLFWwindow *win, i32 button, i32 is_pressed, i32 mods) {
   }
 
   if (is_pressed) {
-    debug(btn + "mouse button pressed");
+    debug(btn + " mouse button pressed");
   } else {
-    debug(btn + "mouse button released");
+    debug(btn + " mouse button released");
   }
 }
 

@@ -29,6 +29,7 @@ const i32 MAX_FPS = 480;
 // for each object
 // TODO: use instanced rendering now that we are rendering more objects
 // TODO: hide the instantiation from the programmer
+// TODO: add a game file and override functions like in unity
 
 // Note that all values should be clamped between 0 and 1, then scaled
 // using the transform.scale attribute for maximum control and
@@ -49,15 +50,13 @@ void init() {
   // Create a square object with the `cellmine` texture.
   auto texture_mine = Textures::create("one", "assets/cellmine.png");
 
+  u32 size = std::min(SCREEN_HEIGHT, SCREEN_WIDTH) / 10;
   for (u8 i = 0; i < 10; i++) {
     for (u8 j = 0; j < 10; j++) {
-      Objects::create(
+      om::create(
           "square" + std::to_string(i) + std::to_string(j), SQUARE_VERTICES,
           texture_mine,
-          Transform(
-              glm::vec3(50.0f * i, 50.0f * j, 0.0f),
-              glm::vec2(SCREEN_HEIGHT / 10)
-          )
+          Transform(glm::vec3(size * i, size * j, 0.0f), glm::vec2(size))
       );
     }
   }
@@ -66,8 +65,8 @@ void init() {
 void render() {
   glClear(GL_COLOR_BUFFER_BIT);
 
-  for (auto &obj : Objects::all()) {
-    obj.render();
+  for (auto &obj : om::all()) {
+    obj->render();
   }
 
   glfwSwapInterval(0);
@@ -132,21 +131,22 @@ int main() {
     u_end = timing::now();
     f64 sleep_time =
         (1.0f / MAX_FPS) - timing::duration<f64>(u_end - d_start).count();
-    // debug("Sleeping for " + std::to_string(sleep_time));
-    smart_sleep(sleep_time, 0.0005f);
+    smart_sleep(sleep_time);
 
     d_end = timing::now();
 
     if (Timers::test("fps")) {
       Timers::reset("fps");
       win::title(
-          "Minesweeper - fps: " + std::to_string(timing::calculate_fps())
+          "Minesweeper - fps: " +
+          std::to_string(timing::calculate_fps(timing::delta))
       );
     }
   }
 
   debug("Closing application...");
   Renderers::clear();
+  om::clear();
   win::destroy();
   return 0;
 }
