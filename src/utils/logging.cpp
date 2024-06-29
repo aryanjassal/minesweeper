@@ -1,10 +1,11 @@
 #include "utils/logging.hpp"
 
 #include <iostream>
+#include <string>
 
 #include "glad/glad.h"
 
-u8 loglevel = LOGLEVEL_DEBUG;
+u8 loglevel = LOGLEVEL_INFO;
 
 void print(str prefix, str msg, bool fail = false) {
   std::cout << prefix << " " << msg << std::endl;
@@ -13,8 +14,8 @@ void print(str prefix, str msg, bool fail = false) {
 
 void logging::set_loglevel(u8 level) { loglevel = level; }
 
-void debug(str msg) {
-  if (loglevel < LOGLEVEL_DEBUG) return;
+void debug(str msg, u8 debug_level) {
+  if (loglevel < LOGLEVEL_DEBUG || loglevel < debug_level) return;
   print("\033[1;90m DEBUG \033[0m", msg, false);
 }
 
@@ -38,7 +39,7 @@ void fatal(str msg) {
   print("\033[1;31m FATAL \033[0m", msg, true);
 }
 
-void gl_geterror() {
+void check_gl_errors() {
   u32 err = glGetError();
   if (err) {
     cstr errstr;
@@ -62,7 +63,6 @@ void gl_geterror() {
         errstr = "UNKNOWN_ERROR";
         break;
     }
-    std::cout << "GL_ERR: " << errstr << " (" << err << ")" << std::endl;
-    exit(err);
+    error("OGL_ERROR: " + str(errstr) + "(" + std::to_string(err) + ")");
   }
 }

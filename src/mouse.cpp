@@ -9,9 +9,15 @@
 glm::dvec2 mouse::position = glm::dvec2(0);
 mousebuttons_t mouse::buttons = mousebuttons_t();
 
-void pos_callback(GLFWwindow *win, double x, double y) {
+// NOTE: all the types need to be f64 as that is what the callback function
+// expects.
+void pos_callback(GLFWwindow *win, f64 x, f64 y) {
   mouse::position = glm::vec2(x, y);
-  debug("Mouse pos: " + std::to_string((int)x) + " " + std::to_string((int)y));
+  debug(
+      "Mouse pos: " + std::to_string(static_cast<i32>(x)) + ", " +
+          std::to_string(static_cast<i32>(y)),
+      LOGLEVEL_DEBUG_MORE
+  );
 }
 
 // NOTE: all the types need to be i32 as that is what the callback function
@@ -35,10 +41,23 @@ void btn_callback(GLFWwindow *win, i32 button, i32 is_pressed, i32 mods) {
     mouse::buttons.right_up = ~is_pressed;
   }
 
+  str btn;
+  switch (button) {
+    case GLFW_MOUSE_BUTTON_LEFT:
+      btn = "left";
+      break;
+    case GLFW_MOUSE_BUTTON_RIGHT:
+      btn = "right";
+      break;
+    default:
+      btn = "unknown";
+      break;
+  }
+
   if (is_pressed) {
-    debug("Mouse button pressed");
+    debug(btn + "mouse button pressed");
   } else {
-    debug("Mouse button released");
+    debug(btn + "mouse button released");
   }
 }
 

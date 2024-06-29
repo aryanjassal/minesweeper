@@ -23,7 +23,8 @@ namespace Objects {
 
 // Create a new object with the given parameters.
 Object &create(
-    str handle, std::vector<vert> vertices, Texture texture = Texture()
+    str handle, std::vector<vert> vertices, Texture texture = Texture(),
+    Transform transform = Transform()
 );
 
 // Return an immutable vector of all active objects.

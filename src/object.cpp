@@ -1,4 +1,5 @@
 #include "object.hpp"
+
 #include <algorithm>
 
 #include "renderer.hpp"
@@ -14,11 +15,12 @@ std::vector<Object> all_objects = std::vector<Object>();
 u32 next_id = 0;
 
 Object &Objects::create(
-    str handle, std::vector<vert> vertices, Texture texture
+    str handle, std::vector<vert> vertices, Texture texture, Transform transform
 ) {
-  auto it = std::find_if(all_objects.begin(), all_objects.end(), [&](const auto &obj) {
-    return obj.handle == handle;
-  });
+  auto it = std::find_if(
+      all_objects.begin(), all_objects.end(),
+      [&](const auto &obj) { return obj.handle == handle; }
+  );
   if (it != all_objects.end()) {
     warn("An object with handle '" + handle + "' already exists");
     return default_object;
@@ -29,6 +31,7 @@ Object &Objects::create(
   obj.vertices = vertices;
   obj.id = next_id++;
   obj.texture = texture;
+  obj.transform = transform;
   all_objects.push_back(obj);
 
   debug("Created new object: " + handle);

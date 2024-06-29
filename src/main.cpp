@@ -27,7 +27,6 @@ const i32 MAX_FPS = 480;
 // TODO: use R"()" to make shaders to include them at compile time
 // TODO: implement batch rendering, making one buffer instead of new draw call
 // for each object
-// TODO: fix random framerate drops
 // TODO: use instanced rendering now that we are rendering more objects
 // TODO: hide the instantiation from the programmer
 
@@ -43,22 +42,23 @@ const std::vector<vert> SQUARE_VERTICES = {
 };
 // clang-format on
 
-// Create timers
-// TODO: see why `auto fps` cannot be omitted from here
-auto fps = Timers::create("fps", 100.0f);
-
 void init() {
+  // Create timers
+  Timers::create("fps", 100.0f);
+
   // Create a square object with the `cellmine` texture.
-  auto &mine = Textures::create("one", "assets/cellmine.png");
+  auto texture_mine = Textures::create("one", "assets/cellmine.png");
 
   for (u8 i = 0; i < 10; i++) {
     for (u8 j = 0; j < 10; j++) {
-      auto &sq = Objects::create(
+      Objects::create(
           "square" + std::to_string(i) + std::to_string(j), SQUARE_VERTICES,
-          mine
+          texture_mine,
+          Transform(
+              glm::vec3(50.0f * i, 50.0f * j, 0.0f),
+              glm::vec2(SCREEN_HEIGHT / 10)
+          )
       );
-      sq.transform =
-          Transform(glm::vec3(50.0f * i, 50.0f * j, 0.0f), glm::vec2(50.0f));
     }
   }
 }
@@ -72,6 +72,9 @@ void render() {
 
   glfwSwapInterval(0);
   glfwSwapBuffers(window);
+
+  // Here as a debug statement in case something goes wrong with OpenGL
+  check_gl_errors();
 }
 
 void update() {
@@ -89,11 +92,11 @@ void update() {
 }
 
 int main() {
+  logging::set_loglevel(LOGLEVEL_DEBUG);
+
   win::init("Minesweeper", SCREEN_WIDTH, SCREEN_HEIGHT);
   kb::init();
   mouse::init();
-
-  logging::set_loglevel(LOGLEVEL_INFO);
 
   auto &shader = Shaders::create("passthrough");
   shader.compile();
@@ -136,7 +139,9 @@ int main() {
 
     if (Timers::test("fps")) {
       Timers::reset("fps");
-      win::title("Minesweeper - fps: " + std::to_string(timing::calculate_fps()));
+      win::title(
+          "Minesweeper - fps: " + std::to_string(timing::calculate_fps())
+      );
     }
   }
 
