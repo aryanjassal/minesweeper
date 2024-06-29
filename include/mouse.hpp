@@ -2,19 +2,17 @@
 
 #include "glm/glm.hpp"  // IWYU pragma: keep
 
-// Register a mouse object storing the current state of the mouse and its
-// buttons
-class mouse_t {
- public:
+using mousebuttons_t = struct smousebuttons_t {
+  bool left, left_down, left_up;
+  bool right, right_down, right_up;
+};
+
+namespace mouse {
   // Store information about the mouse button state
-  bool left_click, left_down, left_up;
-  bool right_click, right_down, right_up;
+  extern mousebuttons_t buttons;
 
   // Access the position as either coordinates or a 2 dimensional vector
-  union {
-    glm::dvec2 position;
-    double x, y;
-  };
+  extern glm::dvec2 position;
 
   // Register the keyboard input handler with the currently active window
   void init();
@@ -22,6 +20,4 @@ class mouse_t {
   // Reset the `click` and `up` attributes as they should only be set for
   // the duration of one update tick.
   void update();
-};
-
-extern mouse_t Mouse;
+}  // namespace mouse

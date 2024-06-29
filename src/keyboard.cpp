@@ -7,20 +7,17 @@
 
 std::map<u16, kbkey_t> keys = std::map<u16, kbkey_t>();
 
-void inline domod(kbkey_t *k, i8 mods) {
-  k->shift = (mods & 1);
-  k->ctrl = (mods & 1 << 1);
-  k->alt = (mods & 1 << 2);
-  k->super = (mods & 1 << 3);
-  k->caps = (mods & 1 << 4);
-  k->num = (mods & 1 << 5);
-}
-
 // NOTE: all the types need to be i32 as that is what the callback function
 // expects.
 void callback(GLFWwindow *win, i32 _key, i32 code, i32 act, i32 mods) {
   kbkey_t k = {};
-  domod(&k, mods);
+
+  k.shift = (mods & 1);
+  k.ctrl = (mods & 1 << 1);
+  k.alt = (mods & 1 << 2);
+  k.super = (mods & 1 << 3);
+  k.caps = (mods & 1 << 4);
+  k.num = (mods & 1 << 5);
 
   if (_key < 0) return;
 
@@ -58,5 +55,4 @@ void kb::update() {
       rkeys.push_back(k.first);
     }
   }
-
 }

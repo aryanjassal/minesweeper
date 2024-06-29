@@ -76,7 +76,7 @@ void render() {
 
 void update() {
   // Tick all the timers.
-  Timers::tick(Time::delta);
+  Timers::tick(timing::delta);
 
   // Poll new input events before processing them.
   glfwPollEvents();
@@ -84,16 +84,16 @@ void update() {
   // Input processing here
 
   // Get new keyboard events
-  // TODO: make the syntax consistent. Probably just need to move evth into a
-  // namespace instead of a class
   kb::update();
-  Mouse.update();
+  mouse::update();
 }
 
 int main() {
   win::init("Minesweeper", SCREEN_WIDTH, SCREEN_HEIGHT);
   kb::init();
-  Mouse.init();
+  mouse::init();
+
+  logging::set_loglevel(LOGLEVEL_INFO);
 
   auto &shader = Shaders::create("passthrough");
   shader.compile();
@@ -112,31 +112,31 @@ int main() {
   // This is the main event loop. This loop runs the `render()` and `update()`
   // method in that order. Also defines the `delta_start`, `delta_end`, and
   // `update_end` timestamps to calculate frame times later.
-  Time::time_point d_start, d_end, u_end;
+  timing::time_point d_start, d_end, u_end;
   while (!glfwWindowShouldClose(window) && !keys[GLFW_KEY_ESCAPE]) {
     // Calculate the delta time. Note that `.count()` returns the value to the
     // nearest integer, so the division is required to get more accuracy. This
     // converts it from microseconds to milliseconds, with a ratio of 1000:1
-    Time::delta =
-        Time::duration_cast<Time::microseconds>(d_end - d_start).count() /
+    timing::delta =
+        timing::duration_cast<timing::microseconds>(d_end - d_start).count() /
         1000.0f;
 
-    d_start = Time::now();
+    d_start = timing::now();
     render();
     update();
 
     // Use smart sleep to ensure a consistent fps.
-    u_end = Time::now();
+    u_end = timing::now();
     f64 sleep_time =
-        (1.0f / MAX_FPS) - Time::duration<f64>(u_end - d_start).count();
+        (1.0f / MAX_FPS) - timing::duration<f64>(u_end - d_start).count();
     // debug("Sleeping for " + std::to_string(sleep_time));
     smart_sleep(sleep_time, 0.0005f);
 
-    d_end = Time::now();
+    d_end = timing::now();
 
     if (Timers::test("fps")) {
       Timers::reset("fps");
-      win::title("Minesweeper - fps: " + std::to_string(Time::calculate_fps()));
+      win::title("Minesweeper - fps: " + std::to_string(timing::calculate_fps()));
     }
   }
 

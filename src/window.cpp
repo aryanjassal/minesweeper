@@ -1,10 +1,11 @@
 // clang-format off
 #include "glad/glad.h"
-#include "utils/logging.hpp"
 #include <GLFW/glfw3.h>
 // clang-format on
 
 #include "window.hpp"
+
+#include "utils/logging.hpp"
 
 GLFWwindow* window = nullptr;
 
@@ -35,7 +36,7 @@ void win::init(str title, u32 width, u32 height) {
 
   // Configure enabled OpenGL features
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  
+
   info("Created new window with title: " + title);
 }
 
@@ -43,8 +44,8 @@ void win::init(str title, glm::vec2 dimensions) {
   win::init(title, dimensions.x, dimensions.y);
 }
 
-void win::title(str title) { 
-  glfwSetWindowTitle(window, title.c_str()); 
+void win::title(str title) {
+  glfwSetWindowTitle(window, title.c_str());
   info("Setting window title to: " + title);
 }
 

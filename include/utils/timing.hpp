@@ -49,7 +49,7 @@ std::vector<Timer> all();
 
 }  // namespace Timers
 
-namespace Time {
+namespace timing {
 
 // To reduce verbosity, include the entirety of std::chrono under the Time
 // namespace. Make commonly used values like high_resolution_clock::time_point
@@ -72,6 +72,6 @@ extern f64 delta;
 // delta_time by 1000, to convert it from milliseconds to seconds. Then, inverse
 // the result to give the fps. This has been done in one calculation as it is
 // simpler to read.
-inline u32 calculate_fps() { return std::round(1000.0f / Time::delta); }
+inline u32 calculate_fps() { return std::round(1000.0f / timing::delta); }
 
-}  // namespace Time
+}  // namespace timing

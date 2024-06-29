@@ -6,11 +6,12 @@
 #include "utils/types.hpp"
 #include "window.hpp"
 
-mouse_t Mouse = mouse_t();
+glm::dvec2 mouse::position = glm::dvec2(0);
+mousebuttons_t mouse::buttons = mousebuttons_t();
 
 void pos_callback(GLFWwindow *win, double x, double y) {
-  Mouse.position = glm::vec2(x, y);
-  debug("Moved to pos " + std::to_string(x) + " " + std::to_string(y));
+  mouse::position = glm::vec2(x, y);
+  debug("Mouse pos: " + std::to_string((int)x) + " " + std::to_string((int)y));
 }
 
 // NOTE: all the types need to be i32 as that is what the callback function
@@ -23,15 +24,15 @@ void btn_callback(GLFWwindow *win, i32 button, i32 is_pressed, i32 mods) {
   // false, and up will be true.
 
   if (button == GLFW_MOUSE_BUTTON_LEFT) {
-    Mouse.left_click = is_pressed;
-    Mouse.left_down = is_pressed;
-    Mouse.left_up = ~is_pressed;
+    mouse::buttons.left = is_pressed;
+    mouse::buttons.left_down = is_pressed;
+    mouse::buttons.left_up = ~is_pressed;
   }
 
   if (button == GLFW_MOUSE_BUTTON_RIGHT) {
-    Mouse.right_click = is_pressed;
-    Mouse.right_down = is_pressed;
-    Mouse.right_up = ~is_pressed;
+    mouse::buttons.right = is_pressed;
+    mouse::buttons.right_down = is_pressed;
+    mouse::buttons.right_up = ~is_pressed;
   }
 
   if (is_pressed) {
@@ -41,15 +42,15 @@ void btn_callback(GLFWwindow *win, i32 button, i32 is_pressed, i32 mods) {
   }
 }
 
-void mouse_t::init() {
+void mouse::init() {
   glfwSetCursorPosCallback(window, pos_callback);
   glfwSetMouseButtonCallback(window, btn_callback);
   debug("Installed mouse callback");
 }
 
-void mouse_t::update() {
-  Mouse.left_up = false;
-  Mouse.left_down = false;
-  Mouse.right_up = false;
-  Mouse.right_down = false;
+void mouse::update() {
+  mouse::buttons.left_up = false;
+  mouse::buttons.left_down = false;
+  mouse::buttons.right_up = false;
+  mouse::buttons.right_down = false;
 }

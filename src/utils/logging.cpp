@@ -4,37 +4,37 @@
 
 #include "glad/glad.h"
 
-u8 loglevel = LOGGING_DEBUG;
+u8 loglevel = LOGLEVEL_DEBUG;
 
 void print(str prefix, str msg, bool fail = false) {
   std::cout << prefix << " " << msg << std::endl;
   if (fail) exit(0);
 }
 
-void Logging::set_loglevel(u32 level) { loglevel = level; }
+void logging::set_loglevel(u8 level) { loglevel = level; }
 
 void debug(str msg) {
-  if (loglevel < LOGGING_DEBUG) return;
+  if (loglevel < LOGLEVEL_DEBUG) return;
   print("\033[1;90m DEBUG \033[0m", msg, false);
 }
 
 void info(str msg) {
-  if (loglevel < LOGGING_INFO) return;
+  if (loglevel < LOGLEVEL_INFO) return;
   print("\033[1;36m INFO  \033[0m", msg, false);
 }
 
 void warn(str msg, bool fail) {
-  if (loglevel < LOGGING_WARN) return;
+  if (loglevel < LOGLEVEL_WARN) return;
   print("\033[1;33m WARN  \033[0m", msg, fail);
 }
 
 void error(str msg, bool fail) {
-  if (loglevel < LOGGING_ERROR) return;
+  if (loglevel < LOGLEVEL_ERROR) return;
   print("\033[1;31m ERROR \033[0m", msg, fail);
 }
 
 void fatal(str msg) {
-  if (loglevel < LOGGING_FATAL) return;
+  if (loglevel < LOGLEVEL_FATAL) return;
   print("\033[1;31m FATAL \033[0m", msg, true);
 }
 

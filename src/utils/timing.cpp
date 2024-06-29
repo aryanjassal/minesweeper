@@ -7,7 +7,7 @@
 #include "utils/types.hpp"
 
 // Set a default value for Time::delta
-f64 Time::delta = 0.0f;
+f64 timing::delta = 0.0f;
 
 // Default timer
 Timer default_timer;

@@ -2,12 +2,12 @@
 
 #include "utils/types.hpp"
 
-#define LOGGING_NONE 0
-#define LOGGING_FATAL 1
-#define LOGGING_ERROR 2
-#define LOGGING_WARN 3
-#define LOGGING_INFO 4
-#define LOGGING_DEBUG 5
+#define LOGLEVEL_NONE 0
+#define LOGLEVEL_FATAL 1
+#define LOGLEVEL_ERROR 2
+#define LOGLEVEL_WARN 3
+#define LOGLEVEL_INFO 4
+#define LOGLEVEL_DEBUG 5
 
 
 void debug(str msg);
@@ -20,9 +20,9 @@ void fatal(str msg);
 // TODO: actually make this good
 void gl_geterror();
 
-namespace Logging {
+namespace logging {
 
 // Set the logging level to output
-void set_loglevel(u32 level);
+void set_loglevel(u8 level);
 
 }
