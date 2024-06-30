@@ -7,6 +7,7 @@
 #include "utils/id.hpp"
 #include "utils/types.hpp"
 
+// TODO: pause attribute which makes timer immume to ticking
 class Timer {
  public:
   // Keep track of the current time and the maximum time when the timer should
