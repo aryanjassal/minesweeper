@@ -1,6 +1,6 @@
 #include "renderer.hpp"
 
-#include <map>
+#include <algorithm>
 #include <vector>
 
 #include "camera.hpp"
@@ -15,25 +15,14 @@
 
 #define ROTATION_AXIS glm::vec3(0.0f, 0.0f, 1.0f)
 
-// Default renderer
-Renderer default_renderer;
-
 // Keep track of the active renderer
-Renderer &active_renderer = default_renderer;
+Renderer *active_renderer = nullptr;
 
-// Hashmap to store all the created renderers
-std::map<str, Renderer> all_renderers = std::map<str, Renderer>();
+std::vector<Renderer> all_renderers = std::vector<Renderer>();
 
-Renderer &Renderers::create(str handle, Shader &shader, u8 mode) {
-  if (all_renderers.find(handle) != all_renderers.end()) {
-    warn("A renderer with handle '" + handle + "' already exists");
-    return default_renderer;
-  }
-
+Renderer *renderer_manager::create(str handle, Shader &shader, u8 mode) {
   // Create a new renderer object and get a persistent pointer to it.
   Renderer renderer;
-  // all_renderers[handle] = rend;
-  // Renderer renderer = all_renderers[handle];
 
   // Set variables on the renderer object, as otherwise, the renderer can
   // falsely delete the actual renderer entry when its destroyed.
@@ -60,42 +49,48 @@ Renderer &Renderers::create(str handle, Shader &shader, u8 mode) {
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
 
-  all_renderers[handle] = renderer;
+  all_renderers.push_back(renderer);
   debug("Created new renderer: " + handle);
-  return all_renderers[handle];
+  return &all_renderers.back();
 };
 
-Renderer &Renderers::get(str handle) {
-  if (all_renderers.find(handle) == all_renderers.end()) {
-    warn("Renderer '" + handle + "' doesn't exist");
-    return default_renderer;
+Renderer *renderer_manager::get(id::id_t id) {
+  for (auto &rend : all_renderers) {
+    if (rend.id == id) return &rend;
   }
-  return all_renderers[handle];
+  return nullptr;
 }
 
-void Renderers::remove(str handle) {
-  if (all_renderers.find(handle) == all_renderers.end()) return;
-
-  // Delete the buffer and then delete the reference from the hashmap to ensure
-  // no dangling references and a clean removal of the renderer.
-  Renderer &rend = all_renderers[handle];
-
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &rend.vbo);
-  glBindVertexArray(0);
-  glDeleteVertexArrays(1, &rend.vao);
-  all_renderers.erase(handle);
-
-  debug("Deallocated renderer: " + rend.handle);
+Renderer *renderer_manager::get(str handle) {
+  for (auto &rend : all_renderers) {
+    if (rend.handle == handle) return &rend;
+  }
+  return nullptr;
 }
 
-void Renderers::clear() {
-  for (auto &p_rend : all_renderers) {
+bool renderer_manager::destroy(id::id_t id) {
+  // Create an iterator which would only contain renderers whose ID is
+  // similar to the argument.
+  auto it = std::find_if(
+      all_renderers.begin(), all_renderers.end(),
+      [&](const Renderer &rend) { return rend.id == id; }
+  );
+
+  // If the object exists in the array, then erase it. Otherwise, return
+  // `false`, signifying something went wrong.
+  if (it != all_renderers.end()) {
+    all_renderers.erase(it);
+    return true;
+  }
+  return false;
+}
+
+void renderer_manager::clear() {
+  for (auto &rend : all_renderers) {
     // Delete the buffer and then delete the reference from the hashmap to
     // ensure no dangling references and a clean removal of the renderer. Note
     // that Renderers::remove() is not used as it also removes the entry from
     // the map, which will result in the iterator becoming invalid.
-    Renderer &rend = p_rend.second;
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glDeleteBuffers(1, &rend.vbo);
@@ -109,7 +104,7 @@ void Renderers::clear() {
 }
 
 void Renderer::activate() {
-  active_renderer = *this;
+  active_renderer = this;
 
   // Activate the shader
   this->shader.activate();
@@ -128,7 +123,7 @@ void Renderer::render(
     std::vector<vert> verts, Transform transform, Texture texture
 ) {
   // Make sure to have an active camera, otherwise warn the user.
-  if (active_camera.handle.empty()) {
+  if (active_camera->handle.empty()) {
     error("At least one camera must be active to perform rendering");
   }
 
@@ -154,8 +149,8 @@ void Renderer::render(
   }
 
   this->shader.set_mat4("model", model);
-  this->shader.set_mat4("projection", active_camera.projection);
-  this->shader.set_mat4("view", active_camera.view);
+  this->shader.set_mat4("projection", active_camera->projection);
+  this->shader.set_mat4("view", active_camera->view);
 
   // TODO: do the vertices change position? if not, then no need to update them.
   glBufferData(

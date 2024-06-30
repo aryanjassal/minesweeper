@@ -1,7 +1,6 @@
 #include "shaders.hpp"
 
 #include <fstream>
-#include <map>
 #include <sstream>
 
 #include "glad/glad.h"
@@ -11,10 +10,7 @@
 #include "utils/types.hpp"
 
 // Hashmap to store all created shaders
-std::map<str, Shader> all_shaders = std::map<str, Shader>();
-
-// Default shader
-Shader default_shader;
+std::vector<Shader> all_shaders = std::vector<Shader>();
 
 // Reads a file at the location `path` and returns the contents as a string
 str read_file(str path) {
@@ -28,127 +24,124 @@ str read_file(str path) {
   return out.str();
 }
 
-Shader &Shaders::create(str handle, str _vert, str _frag, str _geom) {
-  if (all_shaders.find(handle) != all_shaders.end()) {
-    warn("A shader with handle '" + handle + "' already exists");
-    return default_shader;
-  }
-
+Shader *shader_manager::create(str handle, str _vert, str _frag, str _geom) {
   Shader shader;
   shader.handle = handle;
 
   if (!_vert.empty()) {
     shader.vert = read_file(_vert);
   } else {
-    // fallback vertex shader
-    shader.vert = read_file("src/shaders/pass/pass.vs");
+    error("Vertex shader must be provided");
   }
 
   if (!_frag.empty()) {
     shader.frag = read_file(_frag);
   } else {
-    // fallback fragment shader
-    shader.frag = read_file("src/shaders/pass/pass.fs");
+    error("Fragment shader must be provided");
   }
 
   if (!_geom.empty()) {
     shader.geom = read_file(_geom);
   } else {
-    // fallback geometry shader
-    shader.geom = read_file("src/shaders/pass/pass.gs");
+    shader.geom = "";
   }
 
-  all_shaders[handle] = shader; 
+  all_shaders.push_back(shader);
   debug("Created shader: " + handle);
-  return all_shaders[handle];
+  return &all_shaders.back();
 }
 
 void Shader::compile() {
-  // Create the vertex shader
-  cstr vcode = this->vert.c_str();
+  // Create a shader program to link everything to.
+  this->ogl_id = glCreateProgram();
   u32 vs = glCreateShader(GL_VERTEX_SHADER);
+  u32 fs = glCreateShader(GL_FRAGMENT_SHADER);
+  u32 gs = glCreateShader(GL_GEOMETRY_SHADER);
+
+  // Create and link the vertex shader.
+  cstr vcode = this->vert.c_str();
   glShaderSource(vs, 1, &vcode, nullptr);
   glCompileShader(vs);
   log_errors(vs, SHADER_VERT);
+  glAttachShader(this->ogl_id, vs);
 
-  // Create the fragment shader
+  // Create and link the fragment shader.
   cstr fcode = this->frag.c_str();
-  u32 fs = glCreateShader(GL_FRAGMENT_SHADER);
   glShaderSource(fs, 1, &fcode, nullptr);
   glCompileShader(fs);
   log_errors(fs, SHADER_FRAG);
+  glAttachShader(this->ogl_id, fs);
 
-  // Create the geometry shader
-  cstr gcode = this->geom.c_str();
-  u32 gs = glCreateShader(GL_GEOMETRY_SHADER);
-  glShaderSource(gs, 1, &gcode, nullptr);
-  glCompileShader(gs);
-  log_errors(gs, SHADER_GEOM);
+  // Create and link the geometry shader.
+  if (!this->geom.empty()) {
+    cstr gcode = this->geom.c_str();
+    glShaderSource(gs, 1, &gcode, nullptr);
+    glCompileShader(gs);
+    log_errors(gs, SHADER_GEOM);
+    glAttachShader(this->ogl_id, gs);
+  }
 
-  // Attach the shaders to the OpenGL program
-  this->id = glCreateProgram();
-  glAttachShader(this->id, vs);
-  glAttachShader(this->id, fs);
-  // glAttachShader(this->id, gs);
-  glLinkProgram(this->id);
-  log_errors(this->id, SHADER_PROG);
+  glLinkProgram(this->ogl_id);
+  log_errors(this->ogl_id, SHADER_PROG);
   debug("Compiled shader: " + this->handle);
 
   // Delete the shaders as they have already been linked to the shader
   glDeleteShader(vs);
   glDeleteShader(fs);
-  glDeleteShader(gs);
+  if (!this->geom.empty()) glDeleteShader(gs);
 }
 
-void Shader::activate() { 
-  glUseProgram(this->id); 
+void Shader::activate() {
+  glUseProgram(this->ogl_id);
   debug("Activated shader: " + this->handle);
 }
 
 void Shader::set_bool(cstr id, bool val) {
-  glUniform1i(glGetUniformLocation(this->id, id), val ? 1 : 0);
+  glUniform1i(glGetUniformLocation(this->ogl_id, id), val ? 1 : 0);
 }
 void Shader::set_f32(cstr id, f32 val) {
-  glUniform1f(glGetUniformLocation(this->id, id), val);
+  glUniform1f(glGetUniformLocation(this->ogl_id, id), val);
 }
 
 void Shader::set_i32(cstr id, i32 val) {
-  glUniform1i(glGetUniformLocation(this->id, id), val);
+  glUniform1i(glGetUniformLocation(this->ogl_id, id), val);
 }
 
 void Shader::set_vec2(cstr id, f32 x, f32 y) {
-  glUniform2f(glGetUniformLocation(this->id, id), x, y);
+  glUniform2f(glGetUniformLocation(this->ogl_id, id), x, y);
 }
 
 void Shader::set_vec2(cstr id, glm::vec2 val) {
-  glUniform2f(glGetUniformLocation(this->id, id), val.x, val.y);
+  glUniform2f(glGetUniformLocation(this->ogl_id, id), val.x, val.y);
 }
 
 void Shader::set_vec3(cstr id, f32 x, f32 y, f32 z) {
-  glUniform3f(glGetUniformLocation(this->id, id), x, y, z);
+  glUniform3f(glGetUniformLocation(this->ogl_id, id), x, y, z);
 }
 
 void Shader::set_vec3(cstr id, glm::vec3 val) {
-  glUniform3f(glGetUniformLocation(this->id, id), val.x, val.y, val.z);
+  glUniform3f(glGetUniformLocation(this->ogl_id, id), val.x, val.y, val.z);
 }
 
 void Shader::set_vec4(cstr id, f32 x, f32 y, f32 z, f32 w) {
-  glUniform4f(glGetUniformLocation(this->id, id), x, y, z, w);
+  glUniform4f(glGetUniformLocation(this->ogl_id, id), x, y, z, w);
 }
 
 void Shader::set_vec4(cstr id, glm::vec4 val) {
-  glUniform4f(glGetUniformLocation(this->id, id), val.x, val.y, val.z, val.w);
+  glUniform4f(
+      glGetUniformLocation(this->ogl_id, id), val.x, val.y, val.z, val.w
+  );
 }
 
 void Shader::set_mat4(cstr id, const glm::mat4 &val) {
-  u32 location = glGetUniformLocation(this->id, id);
+  u32 location = glGetUniformLocation(this->ogl_id, id);
   glUniformMatrix4fv(location, 1, false, glm::value_ptr(val));
 }
 
 void Shader::log_errors(u32 shader, i8 type) {
   i32 compiled = false;
 
-  char log[512];  // clang-format ignore
+  char log[512];
 
   if (type) {
     cstr shader_type;
@@ -184,10 +177,16 @@ void Shader::log_errors(u32 shader, i8 type) {
   }
 }
 
-Shader &Shaders::get(str handle) {
-  if (all_shaders.find(handle) == all_shaders.end()) {
-    warn("Shader '" + handle + "' doesn't exist");
-    return default_shader;
+Shader *shader_manager::get(id::id_t id) {
+  for (auto &shader : all_shaders) {
+    if (shader.id == id) return &shader;
   }
-  return all_shaders[handle];
+  return nullptr;
+}
+
+Shader *shader_manager::get(str handle) {
+  for (auto &shader : all_shaders) {
+    if (shader.handle == handle) return &shader;
+  }
+  return nullptr;
 }

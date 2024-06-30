@@ -1,66 +1,60 @@
 #include "utils/timing.hpp"
 
-#include <map>
 #include <vector>
 
+#include "utils/id.hpp"
 #include "utils/logging.hpp"
 #include "utils/types.hpp"
 
 // Set a default value for Time::delta
 f64 timing::delta = 0.0f;
 
-// Default timer
-Timer default_timer;
+// Vector keeping track of all objects ever created
+std::vector<Timer> all_timers = std::vector<Timer>();
 
-// Hashmap of all timer objects
-std::map<str, Timer> all_timers = std::map<str, Timer>();
-
-// Create a new timer
-Timer &Timers::create(str handle, f64 threshold_ms) {
-  // Check if a timer with the handle already exists.
-  if (all_timers.find(handle) != all_timers.end()) {
-    error("A timer with the handle '" + handle + "' already exists!");
-  }
-
-  // Initialise a new timer object.
+Timer *timer_manager::create(str handle, f64 threshold_ms) {
   Timer timer;
   timer.handle = handle;
   timer.time_current = 0;
   timer.time_limit = threshold_ms;
+  all_timers.push_back(std::move(timer));
 
-  // Return a persistent reference.
-  all_timers[handle] = timer;
-  return all_timers[handle];
+  debug("Created new timer: " + handle);
+  return &all_timers.back();
 }
 
-// Get a timer from the hashmap
-Timer &Timers::get(str handle) {
-  if (all_timers.find(handle) == all_timers.end()) {
-    warn("Timer '" + handle + "' not found.");
-    return default_timer;
+Timer *timer_manager::get(id::id_t id) {
+  for (auto &timer : all_timers) {
+    if (timer.id == id) return &timer;
   }
-
-  return all_timers[handle];
+  return nullptr;
 }
 
-// Reset a given timer using the shorthand
-void Timers::reset(str handle) { Timers::get(handle).reset(); }
+Timer *timer_manager::get(str handle) {
+  for (auto &timer : all_timers) {
+    if (timer.handle == handle) return &timer;
+  }
+  return nullptr;
+}
 
-// Test a given timer using the shorthand
-bool Timers::test(str handle) { return Timers::get(handle).test(); }
+void timer_manager::reset(id::id_t id) { timer_manager::get(id)->reset(); }
+void timer_manager::reset(str handle) { timer_manager::get(handle)->reset(); }
 
-// Tick all the timers
-void Timers::tick(f64 time_ms) {
-  for (auto &pair : all_timers) {
-    pair.second.tick(time_ms);
+bool timer_manager::test(id::id_t id) { return timer_manager::get(id)->test(); }
+bool timer_manager::test(str handle) {
+  return timer_manager::get(handle)->test();
+}
+
+void timer_manager::tick(f64 time_ms) {
+  for (auto &timer : all_timers) {
+    timer.tick(time_ms);
   }
 }
 
-// Get a vector of all the timers created
-std::vector<Timer> Timers::all() {
-  std::vector<Timer> out;
-  for (auto pair : all_timers) {
-    out.push_back(pair.second);
+std::vector<Timer *> timer_manager::all() {
+  std::vector<Timer *> out;
+  for (auto &timer : all_timers) {
+    out.push_back(&timer);
   }
   return out;
 }

@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "glm/glm.hpp"  // IWYU pragma: keep
+#include "utils/id.hpp"
 #include "utils/types.hpp"
 
 #define SHADER_PROG 0
@@ -12,11 +13,9 @@
 
 class Shader {
  public:
-  // OpenGL identifier for the shader
-  u32 id;
-
-  // User-friendly identifier for the shader
+  id::id_t id;
   str handle;
+  u32 ogl_id;
 
   // Stores the shader code in their respective variables
   str vert, frag, geom;
@@ -47,19 +46,25 @@ class Shader {
   void set_vec4(cstr id, f32 x, f32 y, f32 z, f32 w);
   void set_vec4(cstr id, glm::vec4 val);
   void set_mat4(cstr id, const glm::mat4 &val);
+
+  Shader() : id(id::generate()){};
 };
 
-namespace Shaders {
+namespace shader_manager {
 
 // Creates a shader using the file locations of each file. Default parameter
 // is `nullptr` which would result in a simple passthrough shader. Note that
 // no compilation or error checking is done in this step. Before activating
 // the shader, `compile()` must be called.
-Shader &create(
+Shader *create(
     str handle, str vert = str(), str frag = str(), str geom = str()
 );
 
-// Fetch a shader using its handle. Returns nullptr if the shader doesn't exist.
-Shader &get(str handle);
+// Fetch a shader using it's identifier. Returns nullptr if the shader doesn't exist.
+Shader *get(id::id_t id);
+Shader *get(str handle);
 
-}  // namespace Shaders
+}  // namespace shader_manager
+
+// Alias the namespace to something more convenient.
+namespace smg = shader_manager;

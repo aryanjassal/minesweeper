@@ -30,6 +30,8 @@ const i32 MAX_FPS = 480;
 // TODO: use instanced rendering now that we are rendering more objects
 // TODO: hide the instantiation from the programmer
 // TODO: add a game file and override functions like in unity
+// TODO: maybe let each namespace inherit functions which automatically create
+// stuff like destruction functions, etc.
 
 // Note that all values should be clamped between 0 and 1, then scaled
 // using the transform.scale attribute for maximum control and
@@ -45,17 +47,17 @@ const std::vector<vert> SQUARE_VERTICES = {
 
 void init() {
   // Create timers
-  Timers::create("fps", 100.0f);
+  timer_manager::create("fps", 100.0f);
 
   // Create a square object with the `cellmine` texture.
-  auto texture_mine = Textures::create("one", "assets/cellmine.png");
+  auto texture_mine = txmg::create("one", "assets/cellmine.png");
 
   u32 size = std::min(SCREEN_HEIGHT, SCREEN_WIDTH) / 10;
   for (u8 i = 0; i < 10; i++) {
     for (u8 j = 0; j < 10; j++) {
-      om::create(
+      omg::create(
           "square" + std::to_string(i) + std::to_string(j), SQUARE_VERTICES,
-          texture_mine,
+          *texture_mine,
           Transform(glm::vec3(size * i, size * j, 0.0f), glm::vec2(size))
       );
     }
@@ -65,7 +67,7 @@ void init() {
 void render() {
   glClear(GL_COLOR_BUFFER_BIT);
 
-  for (auto &obj : om::all()) {
+  for (auto obj : omg::all()) {
     obj->render();
   }
 
@@ -78,7 +80,7 @@ void render() {
 
 void update() {
   // Tick all the timers.
-  Timers::tick(timing::delta);
+  timer_manager::tick(timing::delta);
 
   // Poll new input events before processing them.
   glfwPollEvents();
@@ -97,17 +99,17 @@ int main() {
   kb::init();
   mouse::init();
 
-  auto &shader = Shaders::create("passthrough");
-  shader.compile();
+  auto shader = smg::create("passthrough", "src/shaders/pass/pass.vs", "src/shaders/pass/pass.fs");
+  shader->compile();
 
-  auto &renderer = Renderers::create("default", shader);
-  renderer.activate();
+  auto renderer = rmg::create("default", *shader);
+  renderer->activate();
 
   // Create cameras, textures, and objects.
-  auto &cam = Cameras::create_ortho(
+  auto cam = cmg::create_ortho(
       "main", SCREEN_WIDTH, SCREEN_HEIGHT, -100.0f, 100.0f, CAM_ORIGIN_TOP_LEFT
   );
-  cam.activate();
+  cam->activate();
 
   init();
 
@@ -135,8 +137,8 @@ int main() {
 
     d_end = timing::now();
 
-    if (Timers::test("fps")) {
-      Timers::reset("fps");
+    if (timer_manager::test("fps")) {
+      timer_manager::reset("fps");
       win::title(
           "Minesweeper - fps: " +
           std::to_string(timing::calculate_fps(timing::delta))
@@ -145,8 +147,8 @@ int main() {
   }
 
   debug("Closing application...");
-  Renderers::clear();
-  om::clear();
+  rmg::clear();
+  omg::clear();
   win::destroy();
   return 0;
 }

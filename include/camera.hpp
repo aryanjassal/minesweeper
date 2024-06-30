@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glm/glm.hpp"  // IWYU pragma: keep
+#include "utils/id.hpp"
 #include "utils/types.hpp"
 
 // Where to position the coordinate 0,0
@@ -13,6 +14,8 @@ class Camera {
  public:
   f32 near, far;
   str handle;
+
+  const id::id_t id;
 
   glm::mat4 projection;
   glm::mat4 view = glm::mat4(1.0f);
@@ -28,25 +31,31 @@ class Camera {
   // Activate the camera and use the projection and view matrices provided by
   // the selected camera.
   void activate();
+
+  Camera() : id(id::generate()){};
 };
 
-namespace Cameras {
+namespace camera_manager {
 
 // Create a new orthographic camera.
-Camera &create_ortho(
+Camera *create_ortho(
     str handle, u32 width, u32 height, f32 near, f32 far,
     u8 origin = CAM_ORIGIN_BOTTOM_LEFT
 );
-Camera &create_ortho(
+Camera *create_ortho(
     str handle, glm::uvec2 dimensions, f32 near, f32 far,
     u8 origin = CAM_ORIGIN_BOTTOM_LEFT
 );
 
 // Get a camera using its handle.
-Camera &get(str handle);
+Camera *get(id::id_t id);
+Camera *get(str handle);
 
-}  // namespace Cameras
+}  // namespace camera_manager
 
 // Store the active camera whose projection and view matrices will be used for
 // offsetting objects.
-extern Camera &active_camera;
+extern Camera *active_camera;
+
+// Alias the namespace to something more convenient.
+namespace cmg = camera_manager;

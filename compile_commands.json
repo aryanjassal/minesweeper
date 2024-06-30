@@ -8,22 +8,6 @@
       "-DDEBUG",
       "-c",
       "-o",
-      "build/renderer.o",
-      "src/renderer.cpp"
-    ],
-    "directory": "/home/aryanj/Projects/minesweeper",
-    "file": "/home/aryanj/Projects/minesweeper/src/renderer.cpp",
-    "output": "/home/aryanj/Projects/minesweeper/build/renderer.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
-      "-Iinclude",
-      "-Iexternal",
-      "-g",
-      "-DDEBUG",
-      "-c",
-      "-o",
       "build/shaders.o",
       "src/shaders.cpp"
     ],
@@ -56,12 +40,140 @@
       "-DDEBUG",
       "-c",
       "-o",
+      "build/renderer.o",
+      "src/renderer.cpp"
+    ],
+    "directory": "/home/aryanj/Projects/minesweeper",
+    "file": "/home/aryanj/Projects/minesweeper/src/renderer.cpp",
+    "output": "/home/aryanj/Projects/minesweeper/build/renderer.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-Iinclude",
+      "-Iexternal",
+      "-g",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/utils/timing.o",
+      "src/utils/timing.cpp"
+    ],
+    "directory": "/home/aryanj/Projects/minesweeper",
+    "file": "/home/aryanj/Projects/minesweeper/src/utils/timing.cpp",
+    "output": "/home/aryanj/Projects/minesweeper/build/utils/timing.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-Iinclude",
+      "-Iexternal",
+      "-g",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/utils/logging.o",
+      "src/utils/logging.cpp"
+    ],
+    "directory": "/home/aryanj/Projects/minesweeper",
+    "file": "/home/aryanj/Projects/minesweeper/src/utils/logging.cpp",
+    "output": "/home/aryanj/Projects/minesweeper/build/utils/logging.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-Iinclude",
+      "-Iexternal",
+      "-g",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/utils/id.o",
+      "src/utils/id.cpp"
+    ],
+    "directory": "/home/aryanj/Projects/minesweeper",
+    "file": "/home/aryanj/Projects/minesweeper/src/utils/id.cpp",
+    "output": "/home/aryanj/Projects/minesweeper/build/utils/id.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-Iinclude",
+      "-Iexternal",
+      "-g",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/utils/sleep.o",
+      "src/utils/sleep.cpp"
+    ],
+    "directory": "/home/aryanj/Projects/minesweeper",
+    "file": "/home/aryanj/Projects/minesweeper/src/utils/sleep.cpp",
+    "output": "/home/aryanj/Projects/minesweeper/build/utils/sleep.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-Iinclude",
+      "-Iexternal",
+      "-g",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/mouse.o",
+      "src/mouse.cpp"
+    ],
+    "directory": "/home/aryanj/Projects/minesweeper",
+    "file": "/home/aryanj/Projects/minesweeper/src/mouse.cpp",
+    "output": "/home/aryanj/Projects/minesweeper/build/mouse.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-Iinclude",
+      "-Iexternal",
+      "-g",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/keyboard.o",
+      "src/keyboard.cpp"
+    ],
+    "directory": "/home/aryanj/Projects/minesweeper",
+    "file": "/home/aryanj/Projects/minesweeper/src/keyboard.cpp",
+    "output": "/home/aryanj/Projects/minesweeper/build/keyboard.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-Iinclude",
+      "-Iexternal",
+      "-g",
+      "-DDEBUG",
+      "-c",
+      "-o",
       "build/object.o",
       "src/object.cpp"
     ],
     "directory": "/home/aryanj/Projects/minesweeper",
     "file": "/home/aryanj/Projects/minesweeper/src/object.cpp",
     "output": "/home/aryanj/Projects/minesweeper/build/object.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-Iinclude",
+      "-Iexternal",
+      "-g",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/camera.o",
+      "src/camera.cpp"
+    ],
+    "directory": "/home/aryanj/Projects/minesweeper",
+    "file": "/home/aryanj/Projects/minesweeper/src/camera.cpp",
+    "output": "/home/aryanj/Projects/minesweeper/build/camera.o"
   },
   {
     "arguments": [

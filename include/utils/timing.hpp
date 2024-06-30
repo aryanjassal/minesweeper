@@ -4,6 +4,7 @@
 #include <cmath>
 #include <vector>
 
+#include "utils/id.hpp"
 #include "utils/types.hpp"
 
 class Timer {
@@ -12,7 +13,10 @@ class Timer {
   // trigger. All time values are in milliseconds.
   f64 time_current, time_limit;
 
-  // Unique name for each timer.
+  // Unique and read-only ID.
+  const id::id_t id;
+
+  // Programmer-friendly name for each timer.
   str handle;
 
   // Tick the time. Note all the times are in milliseconds.
@@ -23,31 +27,42 @@ class Timer {
 
   // Reset the timer.
   void reset() { time_current = 0; }
+
+  Timer() : id(id::generate()){};
 };
 
-namespace Timers {
+namespace timer_manager {
 
-// Create a new timer.
-Timer &create(str handle, f64 threshold_ms);
+// Create a new timer with the given parameters.
+Timer *create(str handle, f64 threshold_ms);
 
-// Get a timer using its handle.
-Timer &get(str handle);
+// Get a mutable pointer to a timer using it's ID, otherwise returns `nullptr`.
+Timer *get(id::id_t id);
+
+// Get the first instance of an object which has the specified handle, otherwise
+// returns `nullptr`.
+Timer *get(str handle);
 
 // Reset the timer with the given handle. Shorthand for
-// `Timers::get("handle")->reset()`
+// `tm::get(id)->reset()`
+void reset(id::id_t id);
 void reset(str handle);
 
 // Test the timer with the given handle. Shorthand for
-// `Timers::get("handle")->test()`
+// `tm::get(id)->test()`
+bool test(id::id_t id);
 bool test(str handle);
 
 // Tick all the timers together.
 void tick(f64 time_ms);
 
-// Get an immutable vector of all the timers created.
-std::vector<Timer> all();
+// Get a mutable vector of all timers.
+std::vector<Timer *> all();
 
-}  // namespace Timers
+}  // namespace timer_manager
+
+// Alias the namespace to something more convenient.
+namespace tmg = timer_manager;
 
 namespace timing {
 

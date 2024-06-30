@@ -3,13 +3,11 @@
 #include <algorithm>
 
 #include "renderer.hpp"
+#include "utils/id.hpp"
 #include "utils/logging.hpp"
 
 // Vector to store all the created objects
 std::vector<Object> all_objects = std::vector<Object>();
-
-// Keep track of the next id for an instantiated object
-u32 next_id = 0;
 
 Object *object_manager::create(
     str handle, std::vector<vert> vertices, Texture texture, Transform transform
@@ -17,13 +15,12 @@ Object *object_manager::create(
   Object obj;
   obj.handle = handle;
   obj.vertices = vertices;
-  obj.id = next_id++;
   obj.texture = texture;
   obj.transform = transform;
   all_objects.push_back(obj);
 
   debug("Created new object: " + handle);
-  return &all_objects[obj.id];
+  return &all_objects.back();
 }
 
 std::vector<Object *> object_manager::all() {
@@ -42,7 +39,12 @@ std::vector<Object *> object_manager::find(str handle) {
   return out;
 }
 
-Object *object_manager::get(u32 id) { return &all_objects[id]; }
+Object *object_manager::get(id::id_t id) {
+  for (auto &obj : all_objects) {
+    if (obj.id == id) return &obj;
+  }
+  return nullptr;
+}
 
 Object *object_manager::get(str handle) {
   for (auto &obj : all_objects) {
@@ -51,7 +53,7 @@ Object *object_manager::get(str handle) {
   return nullptr;
 }
 
-bool object_manager::destroy(u32 id) {
+bool object_manager::destroy(id::id_t id) {
   // Create an iterator which would only contain objects whose ID is
   // similar to the argument.
   auto it = std::find_if(
@@ -99,5 +101,5 @@ void object_manager::clear() {
 }
 
 void Object::render() {
-  active_renderer.render(this->vertices, this->transform, this->texture);
+  active_renderer->render(this->vertices, this->transform, this->texture);
 }

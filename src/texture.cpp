@@ -1,37 +1,29 @@
 #include "texture.hpp"
-
-#include <map>
+#include <algorithm>
 
 #include "glad/glad.h"
 #include "stb/stb_image.h"
+#include "utils/id.hpp"
 #include "utils/logging.hpp"
 
-// Default texture
-Texture default_texture;
-
 // Hashmap to store all the created objects
-std::map<str, Texture> all_textures = std::map<str, Texture>();
+std::vector<Texture> all_textures = std::vector<Texture>();
 
 // Bind texture to "curent texture"
 void Texture::bind() { 
-  glBindTexture(GL_TEXTURE_2D, this->id); 
-  // debug("Activated texture: " + handle);
+  glBindTexture(GL_TEXTURE_2D, this->ogl_id); 
+  debug("Activated texture: " + handle, LOGLEVEL_DEBUG_MORE);
 }
 
 // Create a new texture
-Texture &Textures::create(
+Texture *texture_manager::create(
     str handle, str file_path, bool transparent, i32 filter
 ) {
-  if (all_textures.find(handle) != all_textures.end()) {
-    warn("A texture with handle '" + handle + "' already exists");
-    return default_texture;
-  }
-
   i32 image_channels = transparent ? GL_RGBA : GL_RGB;
 
   Texture texture;
   texture.handle = handle;
-  glGenTextures(1, &texture.id);
+  glGenTextures(1, &texture.ogl_id);
 
   // Make sure the image is loaded in the correct orientation.
   stbi_set_flip_vertically_on_load(true);
@@ -48,7 +40,7 @@ Texture &Textures::create(
   }
 
   // Generate the texture
-  glBindTexture(GL_TEXTURE_2D, texture.id);
+  glBindTexture(GL_TEXTURE_2D, texture.ogl_id);
   glTexImage2D(
       GL_TEXTURE_2D, 0, image_channels, texture.width, texture.height, 0,
       image_channels, GL_UNSIGNED_BYTE, data
@@ -70,19 +62,59 @@ Texture &Textures::create(
   glBindTexture(GL_TEXTURE_2D, 0);
 
   // Save the texture in the texture hashmap
-  all_textures[handle] = texture;
+  all_textures.push_back(texture);
   debug("Created new texture: " + handle);
-  return all_textures[handle];
+  return &all_textures.back();
 }
 
-void Textures::remove(str handle) {
-  // Confirm that the texture exists in the hashmap
-  if (all_textures.find(handle) == all_textures.end()) return;
+bool texture_manager::destroy(id::id_t id) {
+  // Create an iterator which would only contain objects whose ID is
+  // similar to the argument.
+  auto it = std::find_if(
+      all_textures.begin(), all_textures.end(),
+      [&](const Texture &tex) { return tex.id == id; }
+  );
+
+  if (it == all_textures.end()) return false;
+
+  Texture &tex = *it;
 
   // Delete the buffer and then delete the reference from the hashmap to ensure
   // no dangling references and a clean removal of the texture.
-  glDeleteTextures(1, &all_textures[handle].id);
-  all_textures.erase(handle);
+  glDeleteTextures(1, &tex.ogl_id);
+  debug("Deleted texture: " + tex.handle);
 
+  // If the object exists in the array, then erase it. Otherwise, return
+  // `false`, signifying something went wrong.
+  if (it != all_textures.end()) {
+    all_textures.erase(it);
+    return true;
+  }
+  return false;
+}
+
+bool texture_manager::destroy(str handle) {
+  // Create an iterator which would only contain objects whose ID is
+  // similar to the argument.
+  auto it = std::find_if(
+      all_textures.begin(), all_textures.end(),
+      [&](const Texture &tex) { return tex.handle == handle; }
+  );
+
+  if (it == all_textures.end()) return false;
+
+  Texture &tex = *it;
+
+  // Delete the buffer and then delete the reference from the hashmap to ensure
+  // no dangling references and a clean removal of the texture.
+  glDeleteTextures(1, &tex.ogl_id);
   debug("Deleted texture: " + handle);
+
+  // If the object exists in the array, then erase it. Otherwise, return
+  // `false`, signifying something went wrong.
+  if (it != all_textures.end()) {
+    all_textures.erase(it);
+    return true;
+  }
+  return false;
 }
