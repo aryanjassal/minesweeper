@@ -13,15 +13,19 @@
         inherit system;
       };
     in {
-      devShells.default = pkgs.mkShell {
+      devShells.default = pkgs.stdenv.mkDerivation {
         name = "minesweeper-devshell";
-        nativeBuildInputs = [ pkgs.gnumake ];
-        buildInputs = with pkgs; [
+        nativeBuildInputs = with pkgs; [ 
+          python3
           gcc
           gdb
-          glfw-wayland
+          gnumake
           pkg-config
+        ];
+        buildInputs = with pkgs; [
+          glfw-wayland
           wayland
+          libGL
         ];
       };
     });

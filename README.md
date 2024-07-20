@@ -49,11 +49,3 @@ together, then also run the compiled game. Sorry, no precompiled packages yet. I
 can't be bothered.
 
 Anyways, enjoy minesweeper! With AI, even!
-
-## NixOS
-
-Some of the keen among you might have noticed a wild `flake.nix` in this
-project. Not to be the bearer of dashed hopes, but I have been unable to get the
-project working under Nix using flakes (yet). You might just have to wait for
-proper nix/flake support to be implemented. Worry not, though, as I'm
-(semi-actively) working on it!

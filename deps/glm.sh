@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # guard from running without appropriate env-vars set
 if [ -z "$MAKING" ]; then
   >&2 echo -e "\e[1;31merror:\e[0;0m must be run via Makefile"
